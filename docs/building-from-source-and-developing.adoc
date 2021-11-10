@@ -35,8 +35,8 @@ The majority of changes to the library features, functionality or bug fixes will
 * Docker - setup to use Linux Containers if Linux builds are also required
 
 .*Additional Tools for Linux Users*
-* gnu build tools for your distribution(`gcc`, `g++` etc)
-** _Please Note_ there is no tooling provided to build the Windows binaries on Linux
+* GNU build tools for your distribution(`gcc`, `g++` etc)
+NOTE: there is no tooling provided to build the Windows binaries on Linux
 
 == Build and Development Tooling
 
