@@ -32,7 +32,7 @@ Similar to the `.NET System Exec` from 💖[JKI](https://www.jki.net)💖 - [see
 ## Installation
 A package based distribution (VIPM etc) for this library is still under-development.
 
-In the mean time, check the releases of this repository for downloadable library builds.
+In the mean time, [check the releases of this repository for downloadable library builds](<../../releases>).
 
 Unzip the distribution into your project directory. The library has no dependencies except LabVIEW's built-in libraries.
 
