@@ -22,7 +22,7 @@ Similar to the `.NET System Exec` from 💖[JKI](https://www.jki.net)💖 - [see
 
 ✨ Available under the [Boost License v1.0](./LICENSE) - an Open Source Initiative approved license similar to the MIT/BSD licenses without the attribution requirements for binary files
 
-\* *Support for 64-bit Windows if building from source. Arm base NI-Linux-RT and Apple Mac OSs are supported by C++/LabVIEW code but presently there is no build tooling for these platforms*
+\* *Support for 64-bit Windows if building from source. Arm based NI-Linux-RT and Apple Mac OSs are supported by C++/LabVIEW code but presently there is no build tooling for these platforms*
 
 
 ![An animation showing a console example VI running commands with the shell on a NI-Linux-RT target](<./docs/img/example-command-line-ni-linux-rt.gif>)
