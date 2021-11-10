@@ -1,0 +1,20 @@
+# Directories
+build*/
+.build-*/
+.vscode/
+
+# lvproject
+*.aliases
+*.lvlps
+**/Antidoc-Output/*
+
+# binaries
+*.dll
+*.so
+*.lib
+*.pdb
+*.ipk
+LabVIEW/test-binaries
+
+#Custom Build Scripts
+C++/*.bat

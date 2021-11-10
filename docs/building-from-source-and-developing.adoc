@@ -1,0 +1,165 @@
+= Building from Source and Developing
+
+Welcome to the docs on developing and building from source. If you spot any problems, please open an link:../../issues[issue].
+
+The library consists of two main components - a binary shared library file (.dll or .so) which does the heavy lifting and then a lightweight LabVIEW wrapper.
+
+The majority of changes to the library features, functionality or bug fixes will require being able to build the library from source we will start there.
+
+== Prerequisites
+
+.*Development Tools (All Platforms)*
+ * https://www.ni.com/en-gb/shop/labview/select-edition/labview-community-edition.html[LabVIEW 2020 Community Edition]
+ * https://www.vipm.io/[JKI's VIPM]
+ * https://www.vipm.io/package/jki_lib_caraya/[JKI's Caraya Unit Test Framework]
+ * https://vcpkg.io/en/index.html[`vcpkg`] cross platform C++ dependency manager
+ * CMake (included with `vcpkg`)
+ * https://code.visualstudio.com/[Visual Studio Code] with the following Extensions (Recommended)
+    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools[C/C++ Language Support] 
+    ** https://marketplace.visualstudio.com/items?itemName=twxs.cmake[CMake Language Support]
+    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools[CMake Tools]
+    ** https://marketplace.visualstudio.com/items?itemName=asciidoctor.asciidoctor-vscode[AsciiDoc Tools]
+    ** https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker[Docker Language Support]
+
+.*If you wish to develop and test for Real-Time Targets*
+ * LabVIEW Real-Time Module
+ * An NI-Linux-RT Virtual Machine (Recommended)
+    ** Oracle Virtual Box Users can follow Edward Jones's video: https://www.youtube.com/watch?v=s15gM5b635M
+    ** VMware Users can follow Sam Taggart's guide: https://www.sasworkshops.com/how-to-create-a-crio-virtual-machine/
+
+.*Additional Tools for Windows Users*
+* Microsoft Visual C++ Tools 2019
+** MSVC is the only supported compiler for Windows due to the restrictions in LabVIEW's `extcode.h` header
+** Install with Microsoft Visual Studio 2019 or standalone https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019[Build Tools For Visual Studio]
+* LabVIEW 2020 64-bit if building for 64-bit Windows Platform
+* Docker - setup to use Linux Containers if Linux builds are also required
+
+.*Additional Tools for Linux Users*
+* gnu build tools for your distribution(`gcc`, `g++` etc)
+** _Please Note_ there is no tooling provided to build the Windows binaries on Linux
+
+== Build and Development Tooling
+
+Currently, the tooling provided is only aimed at Windows-based development (link:../../issues[why not submit an issue to discuss this changing]).
+
+The tooling comes in two parts
+
+ * *Build Scripts* which will install dependencies, build the code and install it into the correct location for the LabVIEW code. 
+ * *Example VSCode configuration files* to allow for building and debugging from within VSCode.
+
+All the tooling and scripts assume the following:
+
+* `vcpkg` is installed in `C:\src\vcpkg`
+* LabVIEW 2020 32-bit is installed in `C:\Program Files (x86)\National Instruments\LabVIEW 2020` `required if building for 32-bit systems`
+* LabVIEW 2020 64-bit is installed in `C:\Program Files\National Instruments\LabVIEW 2020` `required if building for 64-bit systems`
+* We can use the LabVIEW 2020 32-bit install to copy the LabVIEW c-integration headers from when building the Linux binaries with Docker. (The headers from other versions and bitnesses of LabVIEW should work fine)
+
+If your system setup differs then please duplicate the build scripts, modify the variables defined at the top of each file and situate them *alongside the existing build scripts*.
+
+You are now ready to build the library binaries so <<Building Binaries,can jump ahead to the next section>> if you do not want to setup the VSCode Environment.
+
+If you want to `install` the VScode configuration files, copy the `.vscode-example` to a top level folder called `.vscode`. If you already have custom files in the .vscode then you will have to manually merge them.
+
+This should leave you with a root directory structure as follows;
+
+.📁 *Asynchronous System Executive*
+* 📁*.vscode* `copied from .vscode-example, potentially modified`
+* 📁*.vscode-example*
+* 📁*C++*
+** 📁*docker-nilrt-build*
+** 📁*src*
+** 📄 _CMakeLists.txt_
+** 📄 _vcpkg.json_
+** 📄 _x64-nilrt-build.bat_
+** 📄 _x64-win-build.bat_
+** 📄 _x86-win-build.bat_
+** 📄 _x86-my-custom-build.bat_ `copied from _x86-win-build.bat_ and modified if required`
+* 📁*docs*
+* 📁*LabVIEW*
+* 📄 _.gitignore_
+* _<other files>_
+
+== Building Binaries
+You are so close to some binary goodness assuming you have installed and setup the required <<Prerequisites,prerequisites>>.
+
+Complete your journey as follows:
+
+. Ensure that your vcpkg install is up-to-date by performing a `git pull` and `.\bootstrap-vcpkg.bat` from the `vcpkg` directory (typically `C:\src\vcpkg`).
+. Close LabVIEW 2020 if it is open otherwise it might prevent the installation of the binary into the `LabVIEW` directory.
+. Call the build script you need e.g. `{cpp}/x86-win-build.bat`. If you need a `Debug` build use `{cpp}/x86-win-build.bat debug`.
+. Wait while the dependency build process and source build completes (this may take many minutes! ☕⌚)
+. Check the `/LabVIEW/serenial.io-ase/` for the shared library files, `/LabVIEW/test-binaries` for the test application executable and `/LabVIEW/packages` if creating the Linux binaries.
+
+== Development
+
+The majority of development work with this library is based around creating the shared library binaries written in C++ with cross-platform build support provided by CMake. Docker is used to provide a more portable build-system when building the binaries for Linux on a Windows machine.
+
+The LabVIEW code consists of a wrapper around the binary and some unit tests of the library's API.
+
+Development of the LabVIEW code does not require any special experience but a good understanding of User Events and Data Value References will be beneficial.
+
+Development of the C++ code will require understanding of `pointers`, `classes`, `mutexes`, `lamdas`, `threads` and `futures & promises`.
+
+=== Overview of Implementation
+
+The library centres on the cross-platform https://www.boost.org/doc/libs/1_77_0/doc/html/boost/process/child.html[`boost::process::child`] class from the https://www.boost.org/[`boost c++`] libraries. This class allows for a `child process` to be spawned that can call an executable and provide standard-out and standard-err redirection to custom handlers. 
+
+These custom handlers can send data back to LabVIEW using User Events and the https://zone.ni.com/reference/en-XX/help/371361R-01/lvexcode/postlvuserevent/[`LVPostUserEvent()`] function provided by C-based LabVIEW's Memory Manager library.
+
+As LabVIEW provides a limited number of threads, any long-running shared-library calls can easily block other operations. To avoid this, a number of non-LabVIEW managed threads are used - primarily to run the `boost::asio::io_context` which runs an event loop that hosts the standard-out/err handlers but also to handle polling-with-timeout calls without blocking LabVIEW.
+
+The C++ code has been designed to minimize complexity at the expense of testability. Unfortunately this means more debugging is required when adding features but avoids the addition of a handler abstraction layers.
+
+Thread safety is implemented where resources may be contested in the C++ code but it is assumed that the order of some shared library calls is managed by a DVR on the LabVIEW side. This allows for the shared library calls to use any LabVIEW thread so multiple instances of a Asynchronous System Exec can run without blocking each other.
+
+=== Overview of Development and Build Tools
+
+A brief summary of the 
+
+==== File Structure and Shared Library Calls
+The project file structure is split between {cpp} development and LabVIEW development. The outputs from the {cpp} build are installed into the LabVIEW library directory to (hopefully) make LabVIEW more likely to find the binaries on different systems.
+
+==== Building with CMake
+The `CMakeLists.txt` file handles builds for different targets. All binaries are built with a static-runtime/standard-libs to provide greater compatibility on different platforms and different Linux distributions.
+
+The configuration flags for `vcpkg` in the `CMakeLists.txt` must occur before the `project` declaration. This means that the normal system type detection routines are unavailable but detection of 32 or 64 bit Windows system should be OK given the restriction to the MSVC compiler.
+
+The `.vscode-example` configuration includes settings to facilitate building with VSCode's CMake Tools extension.   
+==== Debugging
+
+The `.vscode-example` configuration includes tools that allow for VSCode to connect to the debugging interface that the LabVIEW executable process exposes. Ensure that the binaries have been built with debugging symbols, that you have placed break-points in the C++ code and that the required LabVIEW code you are wish to run is open, then click on the Run >> Start Debugging in VSCode and run the VIs in LabVIEW.
+
+=== Docker
+Building the Linux binaries and NI-Linux-RT package is achieved using Docker. This creates an CentOS 8 image that meets the system requirements and uses the NI provided cross-compilation tools to perform a build. The creation of this image will take considerable time due to the need to build `boost` for cross-compilation.
+
+A copy of LabVIEW's _c-integration_ headers are required for the Linux build which can be provided by mounting the `<Path to LabVIEW 2020 Directory>/cintools` from the local (Windows) LabVIEW install into the running container. The `{cpp}/x64_nilrt-build.bat` file sets up the directory mounts when running the container and is the preferred method to perform the build.
+
+If there are errors with the build then adding the line `bash` into the `/C++/docker-nilrt-build/build-and-package.sh` before the statement that errors can help. This will provide an interactive command line interface into the running container (but without any script environment settings) which can be handy for debugging the build script.
+
+=== Call Library Function Node Configuration
+The CLFNs of the LabVIEW library are contained within a conditional disable structure. The default case uses explicit paths which means that LabVIEW will manage the shared-library binary as a dependency when it comes to building executables and packed-project-libraries. This make life easier for library users but can confuse LabVIEW. In addition, shared-library path wildcards are used to so LabVIEW will automatically pick up the correct 32/64 bit shared-library and choose `.dll` on Windows and `.so` on Linux.
+
+This can cause problems with LabVIEW's path resolution and you may have to change a `CLFN` to point to an explicit file path. A tool is provided in the LabVIEW project's `utilities` folder which uses scripting to reset all the relevant CLFNs to the wildcard path name.
+
+The other case of the conditional disable structure provides support for NI-Linux-RT targets but uses an supplied library path to point to the shared-library that will have been installed using `opkg` on the Real-Time Target. The use of a supplied path here prevents LabVIEW trying to search for the Linux Real-Time binary when opening the project on Windows.
+
+=== LabVIEW Unit Testing
+Unit testing is undertaken with Caraya and makes use of a custom binary - see `C++\src\echo-tester.cpp`.
+
+The unit tests aim to exercise the public API and ensure API consistency as minor updates and bug fixes are made.
+
+== Additional Tools & Resources
+
+.The following tools can be handy when undertaking development of shared libraries
+* https://github.com/lucasg/Dependencies[A rewrite of dependency walker on GitHub to check what resources a DLL requires]
+* https://man7.org/linux/man-pages/man8/ld.so.8.html[`ld` command on Linux - useful to check for missing resources on Linux Systems] For NI-Linux-RT install `binutils` with `opkg` to install `ld`.
+
+.The following may be useful when looking to gain a deeper understanding to the inner workings of the library
+* https://www.boost.org/doc/libs/1_77_0/doc/html/boost_process/tutorial.html[Boost Child Process Tutorial]
+* https://www.boost.org/doc/libs/1_77_0/doc/html/boost_process/extend.html[Boost Process Extended Handlers]
+* https://www.boost.org/doc/libs/1_77_0/doc/html/boost_asio/overview/core/basics.html[Boost ASIO]
+* https://forums.ni.com/t5/NI-Linux-Real-Time-Documents/NI-Linux-Real-Time-and-opkg-Introduction-to-ipks/ta-p/4014793?profile.language=en[NI's instructions on creating OPKG packages using the `opkg` build tools]
+
+.This is a collection of tangentially related resources that were helpful during the development of the library
+* https://lavag.org/topic/15998-explanation-of-labview-execution-systems-and-thread-priorities/[A Discussion on LabVIEW's thread and execution system form LAVA]
+* https://github.com/smithed/lvasynctls[An implementation of TLS TCP/IP sockets using `boost::asio` from Daniel Smith]

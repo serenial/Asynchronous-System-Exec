@@ -1,0 +1,11 @@
+= Contributing
+
+First off, 🙏thank you🙏 for taking the time to look at this document!
+
+If you have any feedback, spot a bug or would be interested in submitting a feature/PR then please open an link:../../issues[issue] to discuss it first.
+
+Once the scope of the PR has been defined, review the link:./docs/building-from-source-and-developing.adoc[building from source and developing documentation] and fork the repository, then submit a Pull Request.
+
+
+
+

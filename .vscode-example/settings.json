@@ -1,0 +1,13 @@
+{
+    "cmake.configureOnOpen": false,
+    "cmake.configureOnEdit": true,
+    "cmake.configureSettings": {
+        "CMAKE_TOOLCHAIN_FILE": "C:/src/vcpkg/scripts/buildsystems/vcpkg.cmake",
+            "LVCINTOOLS_INCLUDE_DIRS_32":"C:/Program Files (x86)/National Instruments/LabVIEW 2020/cintools",
+            "LVCINTOOLS_INCLUDE_DIRS_64":"C:/Program Files/National Instruments/LabVIEW 2020/cintools",
+            "INSTALL_DIR_LIBRARY":"${workspaceFolder}/LabVIEW/serenial.io-ase/ase",
+            "INSTALL_DIR_TEST_BINARIES":"${workspaceFolder}/LabVIEW/test-binaries"
+    },
+    "cmake.sourceDirectory": "${workspaceFolder}/C++",
+    "C_Cpp.default.configurationProvider": "ms-vscode.cmake-tools"
+}
