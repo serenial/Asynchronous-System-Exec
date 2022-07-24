@@ -16,6 +16,8 @@
 #include <thread>
 #include <mutex>
 #include <chrono>
+#include <cstring>
+#include <utility>
 
 // boost libs
 #include <boost/filesystem.hpp>
@@ -28,13 +30,10 @@
 #include <boost/format.hpp>
 #include <boost/algorithm/string.hpp>
 
-// labVIEW Libs
-#include <extcode.h>
-
 // local includes
-#include "asynchronous-system-exec/types.hpp"
-#include "asynchronous-system-exec/memory-manager-utils.hpp"
-#include "asynchronous-system-exec/handler-exception-list.hpp"
+#include "common/types.hpp"
+#include "common/lv-interop.hpp"
+#include "./handler-exception-list.hpp"
 
 #ifdef BOOST_WINDOWS_API
 #include <boost/winapi/process.hpp>
@@ -57,7 +56,8 @@ class Interface
         {
             // use numeric array resize as a string is really just an LV byte array
             // and it uses the correct number of bytes for string length
-            throw_any_lv_memory_manager_errors(NumericArrayResize(uB, 1, (UHandle *)&(eventData.data), newSize));
+            load_lv_functions();
+            throw_any_lv_memory_manager_errors(NumericArrayResize(LV_U8_TYPECODE, 1, &(eventData.data), newSize));
             // update max size
             eventStringMaxSize = newSize;
         };
@@ -72,6 +72,7 @@ class Interface
 
         ~OutputEventGenerator()
         {
+            load_lv_functions();
             DSDisposeHandle(eventData.data);
         };
 
@@ -85,12 +86,14 @@ class Interface
                     resizeEventDataHandle(message.length());
                 }
 
+                load_lv_functions();
                 // Write message into StringHandle Buffer
-                MoveBlock(message.c_str(), LHStrBuf(eventData.data), message.length());
+                std::memcpy((*(eventData.data))->str, message.c_str(), message.length());
                 // Write string length to handle
-                LStrLen(*eventData.data) = message.length();
+                (*(eventData.data))->cnt = message.length();
 
                 // Generate Event
+                load_lv_functions();
                 err = PostLVUserEvent(eventRef, (void *)&eventData);
             }
         };
@@ -142,6 +145,7 @@ class Interface
                 didExitEventData data{exit_code, id};
                 if (didExitEventRef)
                 {
+                    load_lv_functions();
                     PostLVUserEvent(didExitEventRef, (void *)&data);
                 }
                 if (ec)
@@ -160,6 +164,8 @@ class Interface
 
     // class members
     const std::string cmd;
+    const std::string exe;
+    const std::vector<std::string> args;
     const boost::filesystem::path workingDir;
     const LStrHandle idLStrHandle;
     boost::process::child childProcess;
@@ -181,19 +187,22 @@ public:
     HandlerExceptionList handlerExceptionList;
 
     // constructor
-    Interface(std::string cmd, boost::filesystem::path workingDir, std::string id, LVUserEventRef stdOutEventRef, LVUserEventRef stdErrEventRef, LVUserEventRef didExitEventRef, std::string stdOutSplitRegexString, std::string stdErrSplitRegexString)
+    Interface(std::string cmd, std::string exe, std::vector<std::string> args, boost::filesystem::path workingDir, std::string id, LVUserEventRef stdOutEventRef, LVUserEventRef stdErrEventRef, LVUserEventRef didExitEventRef, std::string stdOutSplitRegexString, std::string stdErrSplitRegexString)
         : cmd(cmd),
+          exe(exe),
+          args(args),
           workingDir(workingDir),
           idLStrHandle([](std::string id)
                        {
                             // initialize handle with lambda
                             LStrHandle h = 0;
                             // allocate LStrHandle
-                            throw_any_lv_memory_manager_errors(NumericArrayResize(uB, 1, (UHandle *)&(h), id.length()));
+                            load_lv_functions();
+                            throw_any_lv_memory_manager_errors(NumericArrayResize(LV_U8_TYPECODE, 1, &(h), id.length()));
                             // copy string data into handle data
-                            MoveBlock(id.c_str(), LHStrBuf(h), id.length());
+                            std::memcpy((*h)->str, id.c_str(), id.length());
                             // update handle data size
-                            LStrLen(*h) = id.length();
+                            (*h)->cnt = id.length();
                             return h; }(id)),
           handlerExceptionList(),
           io_context(),
@@ -278,30 +287,38 @@ public:
         // being de-initialized which will likely cause more exceptions
     };
 
-    void startCall(){
-        if (workingDir.empty())
-            {
-                childProcess = boost::process::child{
-                    boost::process::cmd = cmd,
-                    boost::process::std_out > stdOutPipe,
-                    boost::process::std_err > stdErrPipe,
-                    boost::process::std_in < stdInPipe,
-                    extendedHandlers,
-                    io_context,
-                    group};
-            }
-            else
-            {
-                childProcess = boost::process::child{
-                    boost::process::cmd = cmd,
-                    boost::process::start_dir = workingDir.string(),
-                    boost::process::std_out > stdOutPipe,
-                    boost::process::std_err > stdErrPipe,
-                    boost::process::std_in < stdInPipe,
-                    extendedHandlers,
-                    io_context,
-                    group};
-            }
+    void startCall()
+    {
+
+        // see https://stackoverflow.com/a/65865530/5609762
+
+        auto launch = [&](auto &&...args)
+        { return boost::process::child(std::forward<decltype(args)>(args)...,
+                                       boost::process::std_out > stdOutPipe,
+                                       boost::process::std_err > stdErrPipe,
+                                       boost::process::std_in < stdInPipe,
+                                       extendedHandlers,
+                                       io_context,
+                                       group); };
+
+        auto launchAccountingForlWorkingDir = [&](auto &&...args)
+        { return workingDir.empty() ? launch(std::forward<decltype(args)>(args)...) : launch(std::forward<decltype(args)>(args)..., boost::process::start_dir = workingDir); };
+
+        // launch with differernt modes depending on cmd syle vs exe-args style (https://www.boost.org/doc/libs/1_79_0/doc/html/boost_process/design.html#boost_process.design.arg_cmd_style)
+        // and with /without working directory
+
+        if (exe.empty())
+        {
+            // use command variant
+            childProcess = launchAccountingForlWorkingDir(boost::process::cmd = cmd);
+        }
+
+        if (cmd.empty())
+        {
+            // use exe-args variant
+            childProcess = launchAccountingForlWorkingDir(boost::process::exe = exe, boost::process::args = args);
+        }
+
         // reset work_guard so io_context.run() will finish when boost::process::child exits
         work.reset();
     }
@@ -355,6 +372,7 @@ public:
 
         LVBoolean data = (status == std::future_status::timeout) ? LVBooleanTrue : LVBooleanFalse;
         if(exitTimeoutEventRef){
+            load_lv_functions();
             PostLVUserEvent(exitTimeoutEventRef, (void *)&data);
         } },
                            childProcessExitCodeFuture);
@@ -418,11 +436,13 @@ extern "C"
     }
 
     ASE_API MgErr ASE_startCall(
-        LVErrorCluster *errorPtr,
+        LVErrorClusterPtr errorPtr,
         Interface **interfaceHandle,
         LStrHandle idStrHandle,
         LStrHandle cmdStrHandle,
-        Path workingDirectory,
+        LStrHandle exeStrHandle,
+        LVArray_t<1, LStrHandle> **argsArrayHandle,
+        LStrHandle workingDirectoryStrHandle,
         StreamSplitRegex *streamSplitRegexPtr,
         StartCallEventRefs *eventRefsPtr)
     {
@@ -434,69 +454,75 @@ extern "C"
         }
 
         // check other handles
-        if (!interfaceHandle || !idStrHandle || !cmdStrHandle || !workingDirectory || !streamSplitRegexPtr || !eventRefsPtr)
+        if (!interfaceHandle || !idStrHandle || !cmdStrHandle || !workingDirectoryStrHandle || !streamSplitRegexPtr || !eventRefsPtr)
         {
             return lv_error_cluster_write_null_ptr_err(errorPtr, __func__);
         }
 
-        Interface* interface=0;
+        Interface *interface = 0;
 
         try
         {
             // create strings from LStrHandles
             std::string id = lv_string_handle_to_string(idStrHandle);
             std::string cmd = lv_string_handle_to_string(cmdStrHandle);
+            std::string exe = lv_string_handle_to_string(exeStrHandle);
+            std::string workingDirectory = lv_string_handle_to_string(workingDirectoryStrHandle);
             std::string stdOutStreamSplitRegexString = lv_string_handle_to_string(streamSplitRegexPtr->stdOutRegex);
             std::string stdErrStreamSplitRegexString = lv_string_handle_to_string(streamSplitRegexPtr->stdErrRegex);
 
-            // create a LStrHandle of some length to allow for conversion from LVPath Type => std::string => boost::filesystem::path
-            LStrHandle pathLStrHandle = 0;
-            throw_any_lv_memory_manager_errors(NumericArrayResize(uB, 1, (UHandle *)&pathLStrHandle, 255));
+            // convert array of args into std::vector
+            std::vector<std::string> args;
+            size_t numberOfArgs = *argsArrayHandle && (*argsArrayHandle)->dims ? (*argsArrayHandle)->dims[0] : 0;
+            LStrHandle *currentArgHandlePtr = (*argsArrayHandle)->data();
+            for (size_t a = 0; a < numberOfArgs; a++)
+            {
+                args.push_back(lv_string_handle_to_string(*currentArgHandlePtr));
+                currentArgHandlePtr++;
+            }
 
             // determine if using a different working directory
             boost::filesystem::path pwd;
-            int32 workingDirType = -1;
 
-            if (!FGetPathType(workingDirectory, &workingDirType) && workingDirType == fAbsPath)
+            if (workingDirectory.length() > 0)
             {
-                // convert Path to LStrHandle
-                FPathToDSString(workingDirectory, &pathLStrHandle);
-                // create string from LStrHandle and push into vector
-                pwd = boost::filesystem::path(lv_string_handle_to_string(pathLStrHandle));
+                pwd = boost::filesystem::path(workingDirectory);
             }
 
-            // dispose of pathLStrHandle
-            throw_any_lv_memory_manager_errors(DSDisposeHandle(pathLStrHandle));
-
             // create interface
-            interface = new Interface(cmd, pwd, id, eventRefsPtr->stdOutEventRef, eventRefsPtr->stdErrorEventRef, eventRefsPtr->didExitEventRef, stdOutStreamSplitRegexString, stdErrStreamSplitRegexString);
+            interface = new Interface(cmd, exe, args, pwd, id, eventRefsPtr->stdOutEventRef, eventRefsPtr->stdErrorEventRef, eventRefsPtr->didExitEventRef, stdOutStreamSplitRegexString, stdErrStreamSplitRegexString);
 
             // start call
             interface->startCall();
         }
-        catch(boost::process::process_error &e){
-            if(interface){
+        catch (boost::process::process_error &e)
+        {
+            if (interface)
+            {
                 delete interface;
             }
-            return lv_error_cluster_write_err(errorPtr, ERR_UNABLE_TO_LAUNCH_EXE, __func__, "Unable to launch the executable as a child process.\n["+ boost::algorithm::trim_copy(std::string(e.what())) + "]");
+            return lv_error_cluster_write_err(errorPtr, ERR_UNABLE_TO_LAUNCH_EXE, __func__, "Unable to launch the executable as a child process.\n[" + boost::algorithm::trim_copy(std::string(e.what())) + "]");
         }
         catch (boost::regex_error)
         {
-            if(interface){
+            if (interface)
+            {
                 delete interface;
             }
             return lv_error_cluster_write_err(errorPtr, ERR_BAD_REGEX_EXPRESSION, __func__, "Invalid Std Output/Std Error stream split regular expression.");
         }
         catch (std::exception &e)
         {
-            if(interface){
+            if (interface)
+            {
                 delete interface;
             }
             return lv_error_cluster_write_std_exception(errorPtr, __func__, e.what());
         }
         catch (...)
         {
-            if(interface){
+            if (interface)
+            {
                 delete interface;
             }
             return lv_error_cluster_write_unknown_err(errorPtr, __func__);
@@ -507,7 +533,7 @@ extern "C"
         return ERR_NO_ERROR;
     }
 
-    ASE_API MgErr ASE_destroy(LVErrorCluster *errorPtr, Interface *interfacePtr, int32 *exitCodePtr, LVArray<1, LVErrorCluster> ***handlerErrorListHandlePtr)
+    ASE_API MgErr ASE_destroy(LVErrorCluster *errorPtr, Interface *interfacePtr, int32_t *exitCodePtr, LVArray_t<1, LVErrorCluster> ***handlerErrorListHandlePtr)
     {
 
         // check ability to write out error
@@ -531,22 +557,24 @@ extern "C"
             // dispose of any unnecessary incoming values
             for (int i = handlerErrorsCount; i < errorListSize; i++)
             {
-                LVErrorCluster errorToDeallocate = (**handlerErrorListHandlePtr)->data[i];
+                LVErrorCluster *errorToDeallocatePtr = (**handlerErrorListHandlePtr)->data() + i;
                 // deallocate source string
-                throw_any_lv_memory_manager_errors(DSDisposeHandle(errorToDeallocate.source));
+                load_lv_functions();
+                throw_any_lv_memory_manager_errors(DSDisposeHandle(errorToDeallocatePtr->source));
             }
 
             // resize handlerErrorList
             if (errorListSize < handlerErrorsCount)
             {
-                throw_any_lv_memory_manager_errors(NumericArrayResize(LV_U8_TYPECODE, 1, (UHandle *)handlerErrorListHandlePtr, handlerErrorsCount * sizeof(LVErrorCluster)));
+                load_lv_functions();
+                throw_any_lv_memory_manager_errors(NumericArrayResize(LV_U8_TYPECODE, 1, handlerErrorListHandlePtr, handlerErrorsCount * sizeof(LVErrorCluster)));
             }
 
             // copy each exception into the handlerErrorsList
             for (size_t i = 0; i < handlerErrorsCount; i++)
             {
                 auto exception = interfacePtr->handlerExceptionList[i];
-                lv_error_cluster_write_std_exception(&((**handlerErrorListHandlePtr)->data[i]), exception.functionName, exception.what);
+                lv_error_cluster_write_std_exception((**handlerErrorListHandlePtr)->data() + i, exception.functionName, exception.what);
             }
 
             // update the handlerErrorsList array size - handle may be null if there have been no exceptions
@@ -641,7 +669,7 @@ extern "C"
     // might pass a User Reference from a previous call when attempting to pass a pointer to
     // an "Invalid/Uninitialized" User Event Reference
 
-    ASE_API MgErr ASE_startWaitOnCall(LVErrorCluster *errorPtr, Interface *interfacePtr, WaitOnCallEventRefs *eventRefsPtr, int32 timeout_ms)
+    ASE_API MgErr ASE_startWaitOnCall(LVErrorCluster *errorPtr, Interface *interfacePtr, WaitOnCallEventRefs *eventRefsPtr, int32_t timeout_ms)
     {
 
         // check ability to write out error

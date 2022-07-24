@@ -8,7 +8,7 @@ Similar to the `.NET System Exec` from 💖[JKI](https://www.jki.net)💖 - [see
 ✨ Flexible LabVIEW Event based API
 
 
-✨ Cross Platform support for 32-bit Windows and 64-bit Linux (RHEL, CentOS, openSUSE & NI-RT)*
+✨ Cross Platform support for 32-bit/64-bit Windows and 64-bit Linux (RHEL, CentOS, openSUSE & NI-RT)*
 
 
 ✨ Non-blocking - multiple executables can run without blocking each other or any LabVIEW threads
@@ -22,20 +22,41 @@ Similar to the `.NET System Exec` from 💖[JKI](https://www.jki.net)💖 - [see
 
 ✨ Available under the [Boost License v1.0](./LICENSE) - an Open Source Initiative approved license similar to the MIT/BSD licenses without the attribution requirements for binary files
 
-\* *Support for 64-bit Windows if building from source. Arm based NI-Linux-RT and Apple Mac OSs are supported by C++/LabVIEW code but presently there is no build tooling for these platforms*
+\* Arm based NI-Linux-RT and Apple Mac OSs _are_ mostly supported by C++/LabVIEW code but presently there is no build tooling for these platforms*
 
 
 ![An animation showing a console example VI running commands with the shell on a NI-Linux-RT target](<./docs/img/example-command-line-ni-linux-rt.gif>)
 
 ---
+## Version 2.0.0 Released 🎉
 
-## Installation
+### Whats New?
+* `Start Call` argument-passing ambiguity/bug removed (matches the internal boost implementation which is more flexible)
+* Binaries for Linux and Windows (32-bit & 64-bit) now included in the Git Repo. Just clone and go!
+* Binary builds require less configurtation as libraries now link dynamically to LabVIEW or the LabVIEW-Runtime
+
+---
+
+## Installation on Windows and Linux-x64
 A package based distribution (VIPM etc) for this library is still under-development.
 
-In the mean time, [check the releases of this repository for downloadable library builds](<../../releases>).
+In the mean time, "installation" is best achieved via `git` as follows;
 
-Unzip the distribution into your project directory. The library has no dependencies except LabVIEW's built-in libraries.
+```bash
+git clone https://gitlab.com/serenial/asynchronous-system-exec.git --depth 1
+```
 
+If you already use `git` with your project you might consider the [`git subtree`](https://www.atlassian.com/git/tutorials/git-subtree) command to copy the current release into our project:
+
+```bash
+cd <my-awesome-project-3rd-party-libraries-directory>
+git subtree add --prefix serenial.io-ase https://gitlab.com/serenial/asynchronous-system-exec.git release --squash
+```
+
+Not a fan of `git`?
+[Check the releases of this repository for downloadable library builds](<../../releases>) - Unzip the distribution into your project directory. The library has no dependencies except LabVIEW's built-in libraries.
+
+## Shared Library Resolution on Windows and Linux-x64
 When first opening/mass-compiling this library, LabVIEW will attempt to resolve the new location of shared library file `serenial-io.ase.<bitness>.<extension>`. Resolution should happen automatically but might lead to warnings which can be safely ignored.
 
 ![LabVIEW Open Loading Warning](<./docs/img/loading-warning.png>)

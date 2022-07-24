@@ -5,16 +5,24 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "(Windows) Attach",
+            "name": "Debug Windows MSVC",
             "type": "cppvsdbg",
-            "request": "attach"
+            "request": "attach",
+            "program": "C:/Program Files (x86)/National Instruments/LabVIEW 2020/LabVIEW.exe",
+            "processId":"${command:pickProcess}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "console": "externalTerminal"
         },
         {
-            "name": "(gdb) Attach",
+            "name": "Debug Linux GDB",
             "type": "cppdbg",
             "request": "attach",
             "program": "/usr/local/natinst/LabVIEW-2020-64/labview",
-            "processId": "${command:pickProcess}",
+            "processId":"${command:pickProcess}",
+            "miDebuggerPath": "/usr/bin/gdb",
             "MIMode": "gdb",
             "setupCommands": [
                 {

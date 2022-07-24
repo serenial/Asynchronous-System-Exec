@@ -66,7 +66,7 @@ CMAKE=/usr/local/bin/cmake
 # configure, build, archive build files and create opkg-package
 # Add a relative symlink between the name that the LabVIEW library is expecting (serenial.io-ase.64.so)
 # and the fully qualified library name (libserenial.io-ase.so.X.Y.Z)
-$CMAKE -DLVCINTOOLS_INCLUDE_DIRS_64=/cintools \
+$CMAKE \
  -DCMAKE_TOOLCHAIN_FILE=$OECORE_NATIVE_SYSROOT/usr/share/cmake/OEToolchainConfig.cmake \
  -DINSTALL_DIR_LIBRARY=$INSTALL_DIR_LIBRARY \
  -DINSTALL_DIR_TEST_BINARIES=$INSTALL_DIR_TEST_BINARIES \

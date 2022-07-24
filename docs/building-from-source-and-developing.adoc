@@ -13,13 +13,7 @@ The majority of changes to the library features, functionality or bug fixes will
  * https://www.vipm.io/[JKI's VIPM]
  * https://www.vipm.io/package/jki_lib_caraya/[JKI's Caraya Unit Test Framework]
  * https://vcpkg.io/en/index.html[`vcpkg`] cross platform C++ dependency manager
- * CMake (included with `vcpkg`)
- * https://code.visualstudio.com/[Visual Studio Code] with the following Extensions (Recommended)
-    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools[C/C++ Language Support] 
-    ** https://marketplace.visualstudio.com/items?itemName=twxs.cmake[CMake Language Support]
-    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools[CMake Tools]
-    ** https://marketplace.visualstudio.com/items?itemName=asciidoctor.asciidoctor-vscode[AsciiDoc Tools]
-    ** https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker[Docker Language Support]
+ * https://cmake.org/[CMake] (setup on users path environmental variable)
 
 .*If you wish to develop and test for Real-Time Targets*
  * LabVIEW Real-Time Module
@@ -28,15 +22,22 @@ The majority of changes to the library features, functionality or bug fixes will
     ** VMware Users can follow Sam Taggart's guide: https://www.sasworkshops.com/how-to-create-a-crio-virtual-machine/
 
 .*Additional Tools for Windows Users*
-* Microsoft Visual C++ Tools 2019
-** MSVC is the only supported compiler for Windows due to the restrictions in LabVIEW's `extcode.h` header
+* Microsoft Visual C++ Tools 2019 (`mingw` could work but not setup or tested)
 ** Install with Microsoft Visual Studio 2019 or standalone https://visualstudio.microsoft.com/downloads/#build-tools-for-visual-studio-2019[Build Tools For Visual Studio]
-* LabVIEW 2020 64-bit if building for 64-bit Windows Platform
 * Docker - setup to use Linux Containers if Linux builds are also required
 
 .*Additional Tools for Linux Users*
 * GNU build tools for your distribution(`gcc`, `g++` etc)
 NOTE: there is no tooling provided to build the Windows binaries on Linux
+
+.*Recommended for C++ development (All Platforms)*
+ * https://code.visualstudio.com/[Visual Studio Code] with the following Extensions (Recommended)
+    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools[C/C++ Language Support] 
+    ** https://marketplace.visualstudio.com/items?itemName=twxs.cmake[CMake Language Support]
+    ** https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools[CMake Tools]
+    ** https://marketplace.visualstudio.com/items?itemName=asciidoctor.asciidoctor-vscode[AsciiDoc Tools]
+    ** https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-docker[Docker Language Support]
+    ** https://marketplace.visualstudio.com/items?itemName=webfreak.debug[Debugging of NI-Linux-RT Targets with `gdbserver`]
 
 == Build and Development Tooling
 
@@ -47,12 +48,7 @@ The tooling comes in two parts
  * *Build Scripts* which will install dependencies, build the code and install it into the correct location for the LabVIEW code. 
  * *Example VSCode configuration files* to allow for building and debugging from within VSCode.
 
-All the tooling and scripts assume the following:
-
-* `vcpkg` is installed in `C:\src\vcpkg`
-* LabVIEW 2020 32-bit is installed in `C:\Program Files (x86)\National Instruments\LabVIEW 2020` `required if building for 32-bit systems`
-* LabVIEW 2020 64-bit is installed in `C:\Program Files\National Instruments\LabVIEW 2020` `required if building for 64-bit systems`
-* We can use the LabVIEW 2020 32-bit install to copy the LabVIEW c-integration headers from when building the Linux binaries with Docker. (The headers from other versions and bitnesses of LabVIEW should work fine)
+WARNING: All the tooling and scripts assume the that `vcpkg` is installed in `C:\src\vcpkg`
 
 If your system setup differs then please duplicate the build scripts, modify the variables defined at the top of each file and situate them *alongside the existing build scripts*.
 
@@ -114,7 +110,7 @@ Thread safety is implemented where resources may be contested in the C++ code bu
 
 === Overview of Development and Build Tools
 
-A brief summary of the 
+The following overview provides useful information before diving into development of the library:
 
 ==== File Structure and Shared Library Calls
 The project file structure is split between {cpp} development and LabVIEW development. The outputs from the {cpp} build are installed into the LabVIEW library directory to (hopefully) make LabVIEW more likely to find the binaries on different systems.

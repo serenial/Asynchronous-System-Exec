@@ -4,7 +4,8 @@ cmake_minimum_required(VERSION 3.19)
 
 # use custom triplet on windows - try and detect using variables avaliable
 # before project is defined so VCPKG variables can be applied
-if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
+
+if(WIN32 AND NOT DEFINED VCPKG_TARGET_TRIPLET)
   if(CMAKE_GENERATOR_PLATFORM STREQUAL "win32")
     set(VCPKG_TARGET_TRIPLET x86-windows-static)
   else()
@@ -12,9 +13,15 @@ if(${CMAKE_HOST_SYSTEM_NAME} STREQUAL "Windows")
   endif()
 endif()
 
-list(APPEND VCPKG_FEATURE_FLAGS "versions")
+set(VERSION_NAME "2.0.0")
 
-set(VERSION_NAME "1.0.0")
+if(NOT DEFINED INSTALL_DIR_LIBRARY)
+  set(INSTALL_DIR_LIBRARY "${CMAKE_CURRENT_LIST_FILE}/../../LabVIEW/serenial.io-ase/ase")
+endif()
+
+if(NOT DEFINED INSTALL_DIR_TEST_BINARIES)
+  set(INSTALL_DIR_TEST_BINARIES "${CMAKE_CURRENT_LIST_FILE}/../../LabVIEW/test-binaries")
+endif()
 
 if(UNIX)
     # set this flag here so it is applied during vcpkg install
@@ -58,13 +65,13 @@ find_package(Boost REQUIRED COMPONENTS date_time filesystem regex system)
 
 # add the shared library
 add_library(shared-library-build SHARED 
-                "src/asynchronous-system-exec.cpp" 
-                "src/asynchronous-system-exec/memory-manager-utils.cpp" 
-                "src/asynchronous-system-exec/handler-exception-list.cpp" 
+                "asynchronous-system-exec.cpp" 
+                "common/lv-interop.cpp" 
+                "handler-exception-list.cpp" 
 )
 
 # Use C++ Standard 11 
-set_property(TARGET shared-library-build PROPERTY CXX_STANDARD 11)
+set_property(TARGET shared-library-build PROPERTY CXX_STANDARD 14)
 set_property(TARGET shared-library-build PROPERTY CXX_STANDARD_REQUIRED ON)
 
 # define output file name
@@ -72,8 +79,7 @@ set_target_properties(shared-library-build PROPERTIES PREFIX "")
 set_target_properties(shared-library-build PROPERTIES OUTPUT_NAME "serenial.io-ase${APPEND_TO_NAME}")
 
 add_compile_definitions(ASE_VERSION=\"${VERSION_NAME}\")
-
-include_directories("${LVCINTOOLS_INCLUDE_DIRS_${BITS}}")
+add_compile_definitions(BYTE_PACKING_${CMAKE_SIZEOF_VOID_P})
 
 # add boost Libs
 target_link_libraries(shared-library-build PRIVATE Boost::boost Boost::system Boost::filesystem Boost::regex Boost::date_time)
@@ -84,9 +90,6 @@ if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     add_compile_definitions("ASE_EXPORTS")
     target_link_options(shared-library-build PRIVATE "/SAFESEH:NO")
 
-    # add LabVIEW Lib
-    target_link_libraries(shared-library-build PRIVATE "${LVCINTOOLS_INCLUDE_DIRS_${BITS}}/labviewv.lib")
-
 elseif( CMAKE_CXX_COMPILER_ID STREQUAL "GNU" )
     message("Platform: Linux (GCC)")
      # Try and avoid missing dependencies by bundling in required libs statically
@@ -94,12 +97,14 @@ else()
     message(FATAL_ERROR "Unknown Platform")
 endif()
 
+message("Install Directory ${INSTALL_DIR_LIBRARY}")
+
 # configure install
 install(TARGETS shared-library-build DESTINATION ${INSTALL_DIR_LIBRARY})
 
 
 # create event test application
-add_executable(EchoTester src/echo-tester.cpp)
+add_executable(EchoTester echo-tester.cpp)
 set_target_properties(EchoTester PROPERTIES OUTPUT_NAME "ase-test-console-app-${BITS}")
 
 install(TARGETS EchoTester DESTINATION ${INSTALL_DIR_TEST_BINARIES})

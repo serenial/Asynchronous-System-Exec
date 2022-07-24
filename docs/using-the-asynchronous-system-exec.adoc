@@ -35,7 +35,7 @@ image::minimal-example.png[A minimal example of the API usage]
 .Please note the following;
 *  Not all executables will self-terminate! You might have to either send the termination signal using `Send Terminate.vi` or indicate via some other method, perhaps writing to or closing the Standard Input, that you want the executable to finish and exit.
 * The `ASE Handle` inputs and outputs for library calls is _by-reference_ i.e. you perform operations on the instance pointed to by the handle. This means that the `ASE Handle` wire can be branched without creating copies of the instance.
-* If the executable we need to call is not in the system's PATH environmental-variable, the absolute path to it can also be used. Simply wire a LabVIEW `Path` type into the executable name terminal.
+* If the executable we need to call is not in the system's PATH environmental-variable, the absolute path to it can also be used. Simply wire a LabVIEW `Path` type into the executable name terminal. This will change to use the _exe-args_ polymorphic instance. In this case the arguments are supplied via a string array to avoid ambiguity when passing the executable path.
 * If no Event References are passed to `Start Call.vi` then any data on the Standard Output or Standard Error is safely and silently discarded.
 
 _and finally_
