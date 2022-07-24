@@ -2,8 +2,7 @@
 // Distributed under the Boost Software License, Version 1.0.
 //    (See https://www.boost.org/LICENSE_1_0.txt)
 
-#ifndef ASYNCHRONOUS_SYSTEM_EXEC_TYPES
-#define ASYNCHRONOUS_SYSTEM_EXEC_TYPES
+#pragma once
 
 #ifdef _WIN32
 #ifdef ASE_EXPORTS
@@ -15,49 +14,65 @@
 #define ASE_API
 #endif
 
-// LabVIEW Includes
-#include <extcode.h>
-#include <platdefines.h>
-
 // ##############################################################################
 // ##                                                                          ##
 // ##                            Type Definitions                              ##
 // ##                                                                          ##
 // ##############################################################################
-
-// LV NumericArrayResize Type Codes
-#define LV_U8_TYPECODE uB
-#define LV_U32_TYPECODE uL
-#define LV_U64_TYPECODE uQ
-
-// lv_prolog.h configures compiler dependend features
-#include <lv_prolog.h>
-
-// define a typecode that depends on the bitness of the platform to indicate the pointer size
-// this is used for the typeCode when using NumericArrayResize on an array of pointers
-#if IsOpSystem64Bit
-#define LVuPtrCode LV_U64_TYPECODE
-#else
-#define LVuPtrCode LV_U32_TYPECODE
+#ifdef BYTE_PACKING_4
+#pragma pack(push, 1)
 #endif
 
+#define LV_U8_TYPECODE 5
+
 // declare any LabVIEW types
+typedef uint32_t LVMagicCookie;
+
+typedef LVMagicCookie LVUserEventRef ;
+
+typedef uint8_t LVBoolean;
+
+#define LVBooleanTrue static_cast<LVBoolean>(1)
+#define LVBooleanFalse static_cast<LVBoolean>(0)
+
+typedef int MgErr;
+
+typedef struct {
+    int32_t cnt;
+    uint8_t str[1];
+} LStr, *LStrPtr, **LStrHandle;
 
 // LabVIEW Array
 template <unsigned ndims, typename datatype>
-struct LVArray
+struct LVArray_t
 {
     unsigned dims[ndims];
-    datatype data[1];
+    uint8_t buffer[1];
+
+    datatype* data(size_t byteOffset=0)
+        {
+    #ifndef BYTE_PACKING_4
+            if (sizeof(datatype) < 8)
+            {
+                return reinterpret_cast<datatype*>(buffer + byteOffset);
+            }
+            return reinterpret_cast<datatype*>(buffer + 4 + byteOffset); // 8-byte aligned data
+    #else
+            datatype* p = reinterpret_cast<datatype*>(buffer + byteOffset);
+            return p;
+    #endif
+        };
 };
 
 // LabVIEW Error Cluster type
 typedef struct
 {
     LVBoolean status;
-    int32 code;
+    int32_t code;
     LStrHandle source;
-} LVErrorCluster;
+} LVErrorCluster, *LVErrorClusterPtr;
+
+typedef LVBoolean* LVBooleanPtr;
 
 typedef struct
 {
@@ -67,7 +82,7 @@ typedef struct
 
 typedef struct
 {
-    int32 exitCode;
+    int32_t exitCode;
     LStrHandle id;
 } didExitEventData;
 
@@ -88,19 +103,15 @@ typedef struct{
     LVUserEventRef didTimeoutEventRef;
 } WaitOnCallEventRefs;
 
-typedef struct
-{
-    int32 dimSize;
-    Path elt[1];
-} SearchPaths;
-typedef SearchPaths **SearchPathsHandle;
 
 typedef struct
 {
     LVUserEventRef ref;
 } UE;
 
-#include <lv_epilog.h>
+#ifdef BYTE_PACKING_4
+#pragma pack(pop)
+#endif
 
 // ##############################################################################
 // ##                                                                          ##
@@ -110,6 +121,9 @@ typedef struct
 
 // Error Codes
 // LabVIEW Memory Manager Errs in range 1->3 so skip that range
+#define noErr 0
+#define mZoneErr 1
+#define mFullErr 2
 
 // No Error
 #define ERR_NO_ERROR noErr
@@ -126,4 +140,21 @@ typedef struct
 #define ERR_BAD_REGEX_EXPRESSION -300
 #define ERR_UNABLE_TO_LAUNCH_EXE -301
 
-#endif
+// Custom Exceptions
+struct LVMemoryManagerError : public std::exception
+{
+    const MgErr err;
+    LVMemoryManagerError(MgErr err) : err(err){};
+    const char *what() const throw()
+    {
+        switch (err)
+        {
+        case mZoneErr:
+            return "An \"mZoneErr\" LabVIEW Memory Manager error has occurred.";
+        case mFullErr:
+            return "An \"mFullErr\" LabVIEW Memory Manager error has occurred.";
+        default:
+            return "An unspecified LabVIEW Memory Manager error has occurred.";
+        }
+    };
+};

@@ -18,3 +18,4 @@ LabVIEW/test-binaries
 
 #Custom Build Scripts
 C++/*.bat
+C++/*.sh

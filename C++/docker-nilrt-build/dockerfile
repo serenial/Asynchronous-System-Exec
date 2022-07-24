@@ -1,18 +1,12 @@
-FROM centos:8.3.2011
+FROM debian:buster-20220711-slim
 
-# Install dependencies to download and build source and to handle archives
-# perl-podlators for opkg build
-RUN dnf update -y \
-    && dnf install -y \
-    gcc gcc-c++ make \
-    dos2unix \
-    tar \
+RUN apt-get update && apt-get install -y \
+    build-essential \
     curl \
-    zip \
-    unzip \
+    perl \
     python3 \
-    perl-podlators.noarch \
-    && dnf clean all
+    dos2unix \
+    && rm -rf /var/lib/apt/lists/*
 
 # Add cmake
 ENV CMAKE_SHA=d25a8e8b76c137ffd55fa28b7a803309a2c6992e30fa0f1cb2172d5b970106e2
