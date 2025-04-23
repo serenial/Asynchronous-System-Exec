@@ -7,6 +7,7 @@
 #include <numeric>
 #include <exception>
 #include <algorithm>
+#include <memory>
 
 #include "./lv_types.hpp"
 #include "./lv_functions.hpp"
@@ -20,8 +21,57 @@ namespace ase
         template <size_t n_dims, class T>
         class LV_MDArrayHandle_t
         {
+        private:
+            LV_Handle_t<LV_Array_t<n_dims, T>> m_handle;
+
+            int32_t get_data_index(std::array<int32_t, n_dims> el) const
+            {
+                int index = 0;
+                int stride = 1;
+
+                for (int i = el.size() - 1; i >= 0; i--)
+                {
+                    index += el[i] * stride;
+                    stride *= extents()[i];
+                }
+
+                return index;
+            }
+
+            bool element_is_in_data_range(std::array<int32_t, n_dims> el) const
+            {
+                return get_data_index(el) < get_data_index(extents());
+            }
+
+            bool is_valid_handle() const
+            {
+                return DSCheckHandle(reinterpret_cast<LV_UHandle_t>(m_handle)) == LV_ERR_noError;
+            }
+
+            // make ctor private
+            LV_MDArrayHandle_t(std::array<int32_t, n_dims> n_elements) : m_handle(nullptr)
+            {
+                size_to_fit(n_elements);
+            }
+
+            // add a static deleter for use with std::unique_ptr
+            static void deleter(LV_MDArrayHandle_t<n_dims, T> *p)
+            {
+                if (!p->is_valid_handle())
+                {
+                    return;
+                }
+                DSDisposeHandle(reinterpret_cast<LV_UHandle_t>(p->m_handle));
+                p->m_handle = nullptr;
+            }
+
         public:
             LV_MDArrayHandle_t() = delete;
+
+            static auto create(std::array<int32_t, n_dims> starting_sizes)
+            {
+                return std::unique_ptr<LV_MDArrayHandle_t<n_dims, T>, decltype(&LV_MDArrayHandle_t<n_dims, T>::deleter)>{new LV_MDArrayHandle_t<n_dims, T>(starting_sizes), LV_MDArrayHandle_t<n_dims, T>::deleter};
+            }
 
             std::array<int32_t, n_dims> extents() const
             {
@@ -108,33 +158,6 @@ namespace ase
                 {
                     (*m_handle)->dims[i] = n_elements[i];
                 }
-            }
-
-        private:
-            LV_Handle_t<LV_Array_t<n_dims, T>> m_handle;
-
-            int32_t get_data_index(std::array<int32_t, n_dims> el) const
-            {
-                int index = 0;
-                int stride = 1;
-
-                for (int i = el.size() - 1; i >= 0; i--)
-                {
-                    index += el[i] * stride;
-                    stride *= extents()[i];
-                }
-
-                return index;
-            }
-
-            bool element_is_in_data_range(std::array<int32_t, n_dims> el) const
-            {
-                return get_data_index(el) < get_data_index(extents());
-            }
-
-            bool is_valid_handle() const
-            {
-                return DSCheckHandle(reinterpret_cast<LV_UHandle_t>(m_handle)) == LV_ERR_noError;
             }
         };
     }

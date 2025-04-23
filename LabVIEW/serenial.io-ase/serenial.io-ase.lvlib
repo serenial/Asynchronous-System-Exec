@@ -12,5 +12,4 @@ Distributed under the Boost Software License, Version 1.0.
 
 </Property>
 	<Item Name="ase.lvclass" Type="LVClass" URL="../ase/ase.lvclass"/>
-	<Item Name="configuration.lvclass" Type="LVClass" URL="../configuration/configuration.lvclass"/>
 </Library>

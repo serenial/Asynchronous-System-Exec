@@ -33,7 +33,7 @@ namespace ase
         constexpr auto LV_BOOLEAN_TRUE = LV_Boolean_t{1};
         constexpr auto LV_BOOLEAN_FALSE = LV_Boolean_t{0};
 
-        // generic LabVIEW Refs type like EventRefs, EDVRs etc
+        // generic LabVIEW Refs type like EventRefs
         using LV_MagicCookie_t = uint32_t;
         using LV_InstanceDataPtr_t = void *;
         using LV_InstanceDataHandle_t = LV_Ptr_t<LV_InstanceDataPtr_t>;
@@ -61,60 +61,11 @@ namespace ase
             }
         };
 
-        // LabVIEW EDVR structure types
-
-        // a dimension specifier used to specify the size of this dimension
-        // and the stride (how many elements to increment a pointer by to get to the next element in this direction)
-        struct LV_EDVRDimensionSpecifier_t
-        {
-            size_t dimension_size;
-            ptrdiff_t stride;
-        };
-
-        // a pointer to a mult-dimensional array with dimension/stride information
-        template <size_t n_dims>
-        struct LV_EDVRNDimensionalSubArray_t
-        {
-            uintptr_t *data_ptr;
-            LV_EDVRDimensionSpecifier_t dimension_specifier[n_dims];
-        };
-
-        // forward decleration of type for use in callback functions
-        struct LV_EDVRData_t;
-        using LV_EDVRDataPtr_t = LV_Ptr_t<LV_EDVRData_t>;
-
-        //  callback function definitions
-        using LV_EDVROnDeleteCallbackFnPtr_t = std::add_pointer_t<void(LV_EDVRDataPtr_t)>;
-        using LV_EDVROnLockChangeCallbackFnPtr_t = std::add_pointer_t<LV_MgErr_t(LV_EDVRDataPtr_t)>;
-
-        // EDVR Data
-        struct LV_EDVRData_t
-        {
-            uintptr_t metadata_ptr;
-            int32_t n_dims;
-            LV_EDVRNDimensionalSubArray_t<5> sub_array;
-            LV_EDVROnDeleteCallbackFnPtr_t delete_callback_fn_ptr;
-            LV_EDVROnLockChangeCallbackFnPtr_t lock_callback_fn_ptr;
-            LV_EDVROnLockChangeCallbackFnPtr_t unlock_callback_fn_ptr;
-        };
-
-        // EDVR Function Pointers - see ni_extcode.h included in examples with the KB article
-        // "Customizing GPU Computing Using the LabVIEW GPU Analysis Toolkit"
-        // https://knowledge.ni.com/KnowledgeArticleDetails?id=kA00Z0000015AcdSAE&l=en-GB
-
-        using LV_EDVRContext_t = LV_MagicCookie_t;
-        using LV_EDVRReference_t = LV_MagicCookie_t;
-
-        using LV_EDVRReferencePtr_t = LV_Ptr_t<LV_EDVRReference_t>;
-        using LV_EDVRDataHandle_t = LV_Handle_t<LV_EDVRData_t>;
-
         // LV Manager Function
 
         using LV_UserEventRef_t = LV_MagicCookie_t;
         using LV_UHandle_t = LV_Handle_t<uint8_t>;
         using LV_UHandlePtr_t = LV_HandlePtr_t<uint8_t>;
-
-        using LV_UserEventRef_t = LV_MagicCookie_t
 
         // Error Codes
         // https://www.ni.com/docs/en-US/bundle/labview/page/labview-manager-function-errors.html

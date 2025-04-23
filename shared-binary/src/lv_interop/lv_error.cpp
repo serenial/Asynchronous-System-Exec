@@ -2,9 +2,7 @@
 #include <string>
 #include <sstream>
 
-#include <opencv2/core.hpp>
 #include "ase/lv_interop/lv_error.hpp"
-#include "ase/lv_interop/lv_edvr_managed_object.hpp"
 
 using namespace ase;
 using namespace lv_interop;
@@ -22,20 +20,10 @@ void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char
             std::rethrow_exception(ex);
         }
     }
-    catch (cv::Exception const&e)
-    {
-        ss << e.what();
-        m_err->code = e.code;
-    }
     catch (LV_MemoryManagerException const&e)
     {
         ss << e.what();
         m_err->code = e.err;
-    }
-    catch (LV_EDVRInvalidException const&e)
-    {
-        ss << e.what();
-        m_err->code = 1556;
     }
     catch (std::system_error const&e){
         ss << e.what();
@@ -48,7 +36,7 @@ void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char
     }
     catch (...)
     {
-        ss << "An undefined exception occured.";
+        ss << "An undefined exception occurred.";
         m_err->code = LV_ERR_bogusError;
     }
 

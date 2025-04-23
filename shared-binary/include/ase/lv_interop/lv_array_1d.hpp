@@ -26,6 +26,10 @@ namespace ase
         public:
             LV_1DArrayHandle_t() = delete;
 
+            static auto create(int32_t size){
+                return LV_MDArrayHandle_t<1, T>::create(std::array<int32_t,1>{size});
+            }
+
             bool empty() const
             {
                 return size() == 0;

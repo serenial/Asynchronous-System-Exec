@@ -16,8 +16,7 @@ namespace ase
             operator std::string_view()  const;
             operator const std::string()  const;
             void copy_from(const std::string&);
+            void copy_from(std::string_view);
         };
     }
-
-    
 }

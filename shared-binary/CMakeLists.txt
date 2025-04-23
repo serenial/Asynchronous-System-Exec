@@ -11,7 +11,7 @@ endif()
 
 
 # Specify Project
-project(ase_shared_binary VERSION 1.0.0 LANGUAGES C CXX)
+project(ase_shared_binary VERSION 3.0.0 LANGUAGES C CXX)
 
 # include tooling to generate export header
 include(GenerateExportHeader)
@@ -20,7 +20,7 @@ include(GenerateExportHeader)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # find boost
-find_package(Boost REQUIRED COMPONENTS system)
+find_package(Boost REQUIRED COMPONENTS process)
 
 # specify shared-library target
 add_library(ase SHARED)
@@ -29,7 +29,7 @@ add_library(ase SHARED)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt)
 
 # add compile definitions
-target_compile_definitions(ase PUBLIC ase_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P})
+target_compile_definitions(ase PUBLIC ASE_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P})
 
 target_include_directories(ase
   PUBLIC
@@ -59,7 +59,6 @@ elseif(UNIX)
 endif()
 
 # specify target properties
-# winrt only supports C++17 std
 set_property(TARGET ase PROPERTY CXX_STANDARD 17)
 set_target_properties(ase PROPERTIES
   POSITION_INDEPENDENT_CODE ON
@@ -75,9 +74,10 @@ generate_export_header(ase)
 # Set the Library Filename to include the bitness
 math(EXPR BITNESS "8*${CMAKE_SIZEOF_VOID_P}")
 set_target_properties(ase PROPERTIES OUTPUT_NAME ase_${BITNESS}-${ase_shared_binary_VERSION_MAJOR})
-# target_link_libraries(ase PRIVATE
-  
-# )
+
+target_link_libraries(ase PRIVATE
+  Boost::process  
+)
 
 # Install Shared Library
 INSTALL(TARGETS ase

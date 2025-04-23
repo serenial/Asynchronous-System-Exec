@@ -1,7 +1,7 @@
 // set the packing and disable the MSVC warning
-// ase_BYTE_PACKING_4 defined at compile time
+// ASE_BYTE_PACKING_4 defined at compile time
 
-#ifdef ase_BYTE_PACKING_4
+#ifdef ASE_BYTE_PACKING_4
 #pragma pack(push, 1)
 #pragma warning (disable : 4103)
 #endif
