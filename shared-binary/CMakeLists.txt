@@ -20,7 +20,7 @@ include(GenerateExportHeader)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # find boost
-find_package(Boost REQUIRED COMPONENTS process)
+find_package(Boost REQUIRED COMPONENTS process filesystem thread)
 
 # specify shared-library target
 add_library(ase SHARED)
@@ -76,7 +76,7 @@ math(EXPR BITNESS "8*${CMAKE_SIZEOF_VOID_P}")
 set_target_properties(ase PROPERTIES OUTPUT_NAME ase_${BITNESS}-${ase_shared_binary_VERSION_MAJOR})
 
 target_link_libraries(ase PRIVATE
-  Boost::process  
+  Boost::process Boost::filesystem Boost::thread
 )
 
 # Install Shared Library

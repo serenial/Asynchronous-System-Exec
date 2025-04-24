@@ -5,8 +5,6 @@
 #include <string>
 
 #include "ase/lv_interop/lv_functions.hpp"
-#include "ase/lv_interop/lv_array_1d.hpp"
-#include "ase/lv_interop/lv_str.hpp"
 #include "ase/lv_interop/lv_error.hpp"
 #include "ase_export.h"
 
@@ -18,10 +16,8 @@ namespace
     static std::string lv_runtime_path_windows;
     // static function pointers
     static LV_DSDisposeHandleFnPtr_t DSDisposeHandleImp = nullptr;
-    static LV_DSCheckHandlePtr_t DSCheckHandleImp = nullptr;
-    static LV_DSNewHClrPtr_t DSNewHClrImp = nullptr;
-    static LV_DSSetHSzClrPtr_t DSSetHSzClrImp = nullptr;
     static LV_DSGetHandleSizePtr_t DSGetHandleSizeImp = nullptr;
+    static LV_NumericArrayResizePtr_t NumericArrayResizeImp = nullptr;
     static LV_PostLVUserEventPtr_t PostLVUserEventImp = nullptr;
 }
 
@@ -61,10 +57,8 @@ void ase::on_shared_library_load()
             }
 
             DSDisposeHandleImp = reinterpret_cast<LV_DSDisposeHandleFnPtr_t>(GetProcAddress(module, "DSDisposeHandle"));
-            DSCheckHandleImp = reinterpret_cast<LV_DSCheckHandlePtr_t>(GetProcAddress(module, "DSCheckHandle"));
-            DSNewHClrImp = reinterpret_cast<LV_DSNewHClrPtr_t>(GetProcAddress(module, "DSNewHClr"));
-            DSSetHSzClrImp = reinterpret_cast<LV_DSSetHSzClrPtr_t>(GetProcAddress(module, "DSSetHSzClr"));
             DSGetHandleSizeImp = reinterpret_cast<LV_DSGetHandleSizePtr_t>(GetProcAddress(module, "DSGetHandleSize"));
+            NumericArrayResizeImp = reinterpret_cast<LV_NumericArrayResizePtr_t>(GetProcAddress(module, "NumericArrayResize"));
             PostLVUserEventImp = reinterpret_cast<LV_PostLVUserEventPtr_t>(GetProcAddress(module, "PostLVUserEvent"));
 #else
             auto module = dlopen(nullptr, RTLD_LAZY);
@@ -75,10 +69,8 @@ void ase::on_shared_library_load()
             }
 
             DSDisposeHandleImp = reinterpret_cast<LV_DSDisposeHandleFnPtr_t>(dlsym(module, "DSDisposeHandle"));
-            DSCheckHandleImp = reinterpret_cast<LV_DSCheckHandlePtr_t>(dlsym(module, "DSCheckHandle"));
-            DSNewHClrImp = reinterpret_cast<LV_DSNewHClrPtr_t>(dlsym(module, "DSNewHClr"));
-            DSSetHSzClrImp = reinterpret_cast<LV_DSSetHSzClrPtr_t>(dlsym(module, "DSSetHSzClr"));
             DSGetHandleSizeImp = reinterpret_cast<LV_DSGetHandleSizePtr_t>(dlsym(module, "DSGetHandleSize"));
+            NumericArrayResizeImp = reinterpret_cast<LV_NumericArrayResizePtr_t>(dlsym(module, "NumericArrayResize"));
             PostLVUserEventImp = reinterpret_cast<LV_PostLVUserEventPtr_t>(dlsym(module, "PostLVUserEvent"));
 
 #endif
@@ -126,21 +118,14 @@ LV_MgErr_t lv_interop::DSDisposeHandle(LV_UHandle_t hndl)
 {
     return DSDisposeHandleImp? DSDisposeHandleImp(hndl): LV_ERR_bogusError;
 }
-LV_MgErr_t lv_interop::DSCheckHandle(LV_UHandle_t hndl)
-{
-    return DSCheckHandleImp? DSCheckHandleImp(hndl): LV_ERR_bogusError;
-}
-LV_UHandle_t lv_interop::DSNewHClr(size_t size)
-{
-    return DSNewHClrImp? DSNewHClrImp(size): nullptr;
-}
-LV_MgErr_t lv_interop::DSSetHSzClr(LV_UHandle_t hndl, size_t size)
-{
-    return DSSetHSzClrImp? DSSetHSzClrImp(hndl, size): LV_ERR_bogusError;
-}
+
 size_t lv_interop::DSGetHandleSize(LV_UHandle_t hndl)
 {
     return DSGetHandleSizeImp? DSGetHandleSizeImp(hndl): LV_ERR_bogusError;
+}
+
+LV_MgErr_t lv_interop::NumericArrayResize(int32_t type_code, int32_t n_dims, LV_UHandlePtr_t ptr, size_t size){
+    return NumericArrayResizeImp? NumericArrayResizeImp(type_code, n_dims, ptr, size) : LV_ERR_bogusError;
 }
 
 LV_MgErr_t lv_interop::PostLVUserEvent(LV_UserEventRef_t ref, void* data){

@@ -1,6 +1,8 @@
 {
   "dependencies": [
-    "boost-process"
+    "boost-process",
+    "boost-filesystem",
+    "boost-thread"
   ],
   "overrides": [
     {

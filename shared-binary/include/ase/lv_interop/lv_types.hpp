@@ -4,7 +4,6 @@
 
 #pragma once
 
-#include <cstddef>
 #include <cstdint>
 #include <stddef.h>
 #include <string>
@@ -37,29 +36,6 @@ namespace ase
         using LV_MagicCookie_t = uint32_t;
         using LV_InstanceDataPtr_t = void *;
         using LV_InstanceDataHandle_t = LV_Ptr_t<LV_InstanceDataPtr_t>;
-
-        // labview multi dimension arrays
-
-        template <size_t n_dims, typename T>
-        struct LV_Array_t
-        {
-            int32_t dims[n_dims];
-            T data[1];
-
-            T *data_ptr()
-            {
-                return reinterpret_cast<T *>(&data[0]);
-            }
-            static size_t data_member_offset_bytes(){
-                // this class is not constuctable so use a dummy struct with the same layout as this class
-                // to determine the data_member_offset_bytes without needing a valid rvalue to call a function on
-                struct dummy_layout{
-                    int32_t dims[n_dims];
-                    T data[1];
-                };
-                return offsetof(dummy_layout, data);
-            }
-        };
 
         // LV Manager Function
 

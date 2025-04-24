@@ -1,6 +1,5 @@
 #pragma once
 
-#include <string_view>
 #include <mutex>
 #include <memory>
 
@@ -17,17 +16,18 @@ namespace ase
         struct user_event_refs_t
         {
             LV_UserEventRef_t std_out, std_err, did_exit;
-        }
+        };
 
         event_handler() = delete;
-        event_handler(std::string_view id, user_event_refs_t ue_refs);
-        LV_MgErr_t generate_std_out(std::string_view data);
-        LV_MgErr_t generate_std_err(std::string_view data);
-        LV_MgErr_t generate_did_exit(int32_t exit_code, std::string_view remaining_out, std::string_view remaining_err);
+        ~event_handler();
+        event_handler(boost::string_view id, user_event_refs_t ue_refs);
+        LV_MgErr_t generate_std_out(boost::string_view data);
+        LV_MgErr_t generate_std_err(boost::string_view data);
+        LV_MgErr_t generate_did_exit(int32_t exit_code, boost::string_view remaining_out, boost::string_view remaining_err);
 
     private:
         std::mutex m_out_mtx, m_err_mtx;
-        std::unique_ptr<LV_StringHandle_t, void (*)(LV_StringHandle_t *)> m_id_string_handle, m_out_string_handle, m_err_string_handle;
+        LV_StringHandle_t* m_id_string_handle, *m_out_string_handle, *m_err_string_handle;
         const user_event_refs_t m_refs;
 
 #include "./lv_interop/set_packing.hpp"

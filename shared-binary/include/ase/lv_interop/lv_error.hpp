@@ -4,6 +4,7 @@
 #include <stdexcept>
 #include "./lv_types.hpp"
 #include "./lv_str.hpp"
+#include "./lv_functions.hpp"
 
 using namespace ase;
 using namespace lv_interop;
