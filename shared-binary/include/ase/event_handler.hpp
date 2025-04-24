@@ -2,6 +2,9 @@
 
 #include <mutex>
 #include <memory>
+#include <string>
+
+#include <boost/asio.hpp>
 
 #include "./lv_interop/lv_str.hpp"
 
@@ -20,14 +23,17 @@ namespace ase
 
         event_handler() = delete;
         ~event_handler();
-        event_handler(boost::string_view id, user_event_refs_t ue_refs);
-        LV_MgErr_t generate_std_out(boost::string_view data);
-        LV_MgErr_t generate_std_err(boost::string_view data);
-        LV_MgErr_t generate_did_exit(int32_t exit_code, boost::string_view remaining_out, boost::string_view remaining_err);
+        event_handler(boost::string_view id, user_event_refs_t ue_refs, bool convert_utf8);
+        LV_MgErr_t generate_std_out(const boost::asio::streambuf& data, size_t bytes);
+        LV_MgErr_t generate_std_err(const boost::asio::streambuf& data, size_t bytes);
+        LV_MgErr_t generate_did_exit(int32_t exit_code, const boost::asio::streambuf& remaining_out, size_t out_bytes,  const boost::asio::streambuf& remaining_err, size_t err_bytes);
 
     private:
+        void stringify_buffer(const boost::asio::streambuf& buf, size_t bytes, std::string& str);
         std::mutex m_out_mtx, m_err_mtx;
+        std::string m_out_str, m_err_str;
         LV_StringHandle_t* m_id_string_handle, *m_out_string_handle, *m_err_string_handle;
+        const bool m_convert_utf8;
         const user_event_refs_t m_refs;
 
 #include "./lv_interop/set_packing.hpp"

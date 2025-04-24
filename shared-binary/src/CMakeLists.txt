@@ -11,5 +11,5 @@ target_sources(ase PUBLIC
 target_sources(ase PRIVATE
     #${CMAKE_CURRENT_LIST_DIR}/asynchronous_system_exec.cpp
     ${CMAKE_CURRENT_LIST_DIR}/event_handler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/async_pipe_handler.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/async_reader_pipe.cpp
 )

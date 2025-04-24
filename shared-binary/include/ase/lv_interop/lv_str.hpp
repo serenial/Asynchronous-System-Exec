@@ -3,6 +3,7 @@
 #include <string>
 
 #include <boost/utility/string_view.hpp>
+#include <boost/asio.hpp>
 
 #include "./lv_types.hpp"
 
@@ -21,7 +22,7 @@ namespace ase
 
             LV_Handle_t<LV_Str> m_handle;
             size_t capacity() const;
-            void ensure_sized_to_fit(size_t size);
+            void size_to_fit(size_t size);
             LV_StringHandle_t();
 
             public:
@@ -33,6 +34,8 @@ namespace ase
             operator boost::string_view()  const;
             LV_StringHandle_t& operator=(const char* c);
             LV_StringHandle_t& operator=(boost::string_view str);
+            void copy_from_streambuf(const boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8);
+            void copy_from_string(const std::string& str);
         };
     }
 }
