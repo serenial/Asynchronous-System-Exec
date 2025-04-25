@@ -27,7 +27,7 @@ namespace ase
         event_handler(boost::string_view id, user_event_refs_t ue_refs, bool convert_utf8);
         LV_MgErr_t generate_std_out(boost::asio::streambuf& data, size_t bytes);
         LV_MgErr_t generate_std_err(boost::asio::streambuf& data, size_t bytes);
-        LV_MgErr_t generate_did_exit(int32_t exit_code, const std::string& remaining_out,  const std::string& remaining_err);
+        LV_MgErr_t generate_did_exit(int32_t exit_code, boost::asio::streambuf &std_out_buf, size_t std_out_size, boost::asio::streambuf &std_err_buf, size_t std_err_size);
 
     private:
         std::string m_out_str, m_err_str;

@@ -58,15 +58,10 @@ void process::start(
                                          {
                                              if (!ec)
                                              {
-                                                 boost::system::error_code ec;
+                                                m_std_out.cancel();
+                                                m_std_err.cancel();
 
-                                                 std::string remaining_out, remaining_err;
-
-                                                // get any remaining content
-                                                //  asio::read(m_std_out, asio::dynamic_buffer(remaining_out), asio::transfer_all(), ec);
-                                                //  asio::read(m_std_err, asio::dynamic_buffer(remaining_err), asio::transfer_all(), ec);
-                                                
-                                                 m_event_handler.generate_did_exit(exit_code, remaining_out, remaining_err);
+                                                m_event_handler.generate_did_exit(exit_code, m_std_out_buf, m_std_out_buf.size(), m_std_err_buf, m_std_err_buf.size());
                                              }
 
                                              m_exit_promise.set_value(exit_code);

@@ -36,7 +36,7 @@ extern "C"
             process p(
                 "_id_",
                 *refs_ptr,
-                boost::regex{"\n"},
+                boost::regex{"Approximate"},
                 boost::regex{"\n"},
                 true);
 

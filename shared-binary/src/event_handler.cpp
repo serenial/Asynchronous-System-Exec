@@ -41,17 +41,16 @@ LV_MgErr_t event_handler::generate_std_err(boost::asio::streambuf& data, size_t 
     return PostLVUserEvent(m_refs.std_err, &event_data);
 }
 
-LV_MgErr_t event_handler::generate_did_exit(int32_t exit_code, const std::string& remaining_out, const std::string& remaining_err)
+LV_MgErr_t event_handler::generate_did_exit(int32_t exit_code, boost::asio::streambuf &std_out_buf, size_t std_out_size, boost::asio::streambuf &std_err_buf, size_t std_err_size)
 {
-
     // create some LV_StringHandle_t for this event
     using unique_lv_string_handle_t = std::unique_ptr<LV_StringHandle_t, decltype(&LV_StringHandle_t::destroy)>;
 
-    unique_lv_string_handle_t remaining_out_handle{LV_StringHandle_t::create(remaining_out.length()), &LV_StringHandle_t::destroy};
-    unique_lv_string_handle_t remaining_err_handle{LV_StringHandle_t::create(remaining_err.length()), &LV_StringHandle_t::destroy};
+    unique_lv_string_handle_t remaining_out_handle{LV_StringHandle_t::create(std_out_size), &LV_StringHandle_t::destroy};
+    unique_lv_string_handle_t remaining_err_handle{LV_StringHandle_t::create(std_err_size), &LV_StringHandle_t::destroy};
 
-    remaining_out_handle->copy_from_string(remaining_out, m_convert_utf8);
-    remaining_err_handle->copy_from_string(remaining_err, m_convert_utf8);
+    remaining_out_handle->consume_from_streambuf(std_out_buf, std_out_size, m_convert_utf8);
+    remaining_err_handle->consume_from_streambuf(std_err_buf, std_err_size, m_convert_utf8);
 
     LV_EventExit_t event_data(exit_code, *remaining_out_handle, *remaining_err_handle, *m_id_string_handle);
 
