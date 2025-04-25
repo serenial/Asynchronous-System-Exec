@@ -108,15 +108,15 @@ void LV_StringHandle_t::destroy(LV_StringHandle_t *p)
     DSDisposeHandle(reinterpret_cast<LV_UHandle_t>(p->m_handle));
 }
 
-void LV_StringHandle_t::copy_from_streambuf(const boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8)
+void LV_StringHandle_t::consume_from_streambuf(boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8)
 {
 
     boost::asio::streambuf::const_buffers_type cb = buffer.data();
+    buffer.consume(bytes);
 
 #ifdef _WIN32
     if (convert_utf8)
     {
-
         std::string utf8_chars{boost::asio::buffers_begin(cb), boost::asio::buffers_begin(cb) + bytes};
 
         auto n_bytes_wide_string = MultiByteToWideChar(CP_UTF8, 0, &utf8_chars[0], static_cast<int>(bytes), NULL, 0);

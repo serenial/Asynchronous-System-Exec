@@ -14,13 +14,11 @@ process::process(
       m_std_err_regex(std_err_match_regex),
       m_io_context(),
       m_work_guard(m_io_context.get_executor()),
-      m_io_run_thread([=]()
-                      { m_io_context.run(); 
-                        return;
-                    }),
+      m_io_run_thread([=](){ m_io_context.run();}),
       m_event_handler(id, event_refs, convert_utf8_on_win),
       m_std_out(m_io_context),
       m_std_err(m_io_context),
+      m_process_io({nullptr, m_std_out, m_std_err}),
       m_exit_future(m_exit_promise.get_future()),
       m_std_out_handler([&](boost::system::error_code ec, size_t transferred)
                         {
@@ -37,6 +35,8 @@ process::process(
               boost::asio::async_read_until(m_std_err, m_std_err_buf, m_std_err_regex, m_std_err_handler);
           } })
 {
+    boost::asio::async_read_until(m_std_out, m_std_out_buf, m_std_out_regex, m_std_out_handler);
+    boost::asio::async_read_until(m_std_err, m_std_err_buf, m_std_err_regex, m_std_err_handler);
 }
 
 void process::start(
@@ -51,7 +51,7 @@ void process::start(
                 m_io_context,
                 exe_path,
                 exe_args,
-                boost::process::process_stdio{nullptr, m_std_out, m_std_err},
+                m_process_io,
                 std::forward<decltype(args)>(args)...),
             asio::bind_cancellation_slot(m_signal.slot(),
                                          [&](boost::system::error_code ec, int exit_code)
@@ -62,21 +62,14 @@ void process::start(
 
                                                  std::string remaining_out, remaining_err;
 
-                                                 // stop any pending reads
-                                                 m_std_out.cancel();
-                                                 m_std_err.cancel();
-
-                                                 // get any remaining content
-                                                 asio::read(m_std_out, asio::dynamic_buffer(remaining_out), asio::transfer_all(), ec);
-                                                 asio::read(m_std_err, asio::dynamic_buffer(remaining_err), asio::transfer_all(), ec);
+                                                // get any remaining content
+                                                //  asio::read(m_std_out, asio::dynamic_buffer(remaining_out), asio::transfer_all(), ec);
+                                                //  asio::read(m_std_err, asio::dynamic_buffer(remaining_err), asio::transfer_all(), ec);
                                                 
                                                  m_event_handler.generate_did_exit(exit_code, remaining_out, remaining_err);
                                              }
 
                                              m_exit_promise.set_value(exit_code);
-                                             // close the pipes
-                                             m_std_out.close();
-                                             m_std_err.close();
                                          }));
     };
 
@@ -88,9 +81,6 @@ void process::start(
     {
         execute_with_args(boost::process::process_start_dir(working_dir));
     }
-
-    boost::asio::async_read_until(m_std_out, m_std_out_buf, m_std_out_regex, m_std_out_handler);
-    boost::asio::async_read_until(m_std_err, m_std_err_buf, m_std_err_regex, m_std_err_handler);
 
     m_work_guard.reset();
 }
@@ -118,7 +108,7 @@ int32_t process::wait_for_exit_code()
 process::~process()
 {
     m_work_guard.reset();
-    send_terminate();
+    //send_terminate();
     m_std_out.close();
     m_std_err.close();
 

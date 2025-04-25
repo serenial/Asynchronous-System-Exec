@@ -20,21 +20,21 @@ event_handler::event_handler(boost::string_view id, user_event_refs_t ue_refs, b
     *m_id_string_handle = id;
 }
 
-LV_MgErr_t event_handler::generate_std_out(const boost::asio::streambuf& data, size_t bytes)
+LV_MgErr_t event_handler::generate_std_out(boost::asio::streambuf& data, size_t bytes)
 {
     // copy data into m_out_string_handle
-    m_out_string_handle->copy_from_streambuf(data, bytes, m_convert_utf8);
+    m_out_string_handle->consume_from_streambuf(data, bytes, m_convert_utf8);
 
     LV_EventStdOut_t event_data(*m_out_string_handle, *m_id_string_handle);
 
     return PostLVUserEvent(m_refs.std_out, &event_data);
 }
 
-LV_MgErr_t event_handler::generate_std_err(const boost::asio::streambuf& data, size_t bytes)
+LV_MgErr_t event_handler::generate_std_err(boost::asio::streambuf& data, size_t bytes)
 {
 
     // copy data into m_err_string_handle
-    m_err_string_handle->copy_from_streambuf(data, bytes, m_convert_utf8);
+    m_err_string_handle->consume_from_streambuf(data, bytes, m_convert_utf8);
 
     LV_EventStdErr_t event_data(*m_err_string_handle, *m_id_string_handle);
 

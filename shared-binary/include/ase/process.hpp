@@ -47,6 +47,7 @@ namespace ase
         event_handler m_event_handler;
         asio::streambuf m_std_out_buf, m_std_err_buf;
         asio::readable_pipe m_std_out, m_std_err;
+        boost::process::process_stdio m_process_io;
         asio::cancellation_signal m_signal;
         std::promise<int> m_exit_promise;
         std::shared_future<int> m_exit_future;

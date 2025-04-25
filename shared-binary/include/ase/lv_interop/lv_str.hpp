@@ -36,7 +36,7 @@ namespace ase
             operator std::filesystem::path()  const;
             LV_StringHandle_t& operator=(const char* c);
             LV_StringHandle_t& operator=(boost::string_view str);
-            void copy_from_streambuf(const boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8);
+            void consume_from_streambuf(boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8);
             void copy_from_string(const std::string& str, bool convert_utf8);
         };
     }
