@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <filesystem>
 
 #include <boost/utility/string_view.hpp>
 #include <boost/asio.hpp>
@@ -32,10 +33,11 @@ namespace ase
             static LV_StringHandle_t* create(size_t stating_capacity);
             static void destroy(LV_StringHandle_t* to_destroy);
             operator boost::string_view()  const;
+            operator std::filesystem::path()  const;
             LV_StringHandle_t& operator=(const char* c);
             LV_StringHandle_t& operator=(boost::string_view str);
             void copy_from_streambuf(const boost::asio::streambuf &buffer, size_t bytes, bool convert_utf8);
-            void copy_from_string(const std::string& str);
+            void copy_from_string(const std::string& str, bool convert_utf8);
         };
     }
 }

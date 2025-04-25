@@ -6,10 +6,12 @@ target_sources(ase PUBLIC
   BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include
   FILES
   ${CMAKE_CURRENT_SOURCE_DIR}/include/ase/event_handler.hpp
+  ${CMAKE_CURRENT_SOURCE_DIR}/include/ase/process.hpp
+  
 )
 
 target_sources(ase PRIVATE
-    #${CMAKE_CURRENT_LIST_DIR}/asynchronous_system_exec.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/asynchronous_system_exec.cpp
     ${CMAKE_CURRENT_LIST_DIR}/event_handler.cpp
-    ${CMAKE_CURRENT_LIST_DIR}/async_reader_pipe.cpp
+    ${CMAKE_CURRENT_LIST_DIR}/process.cpp
 )

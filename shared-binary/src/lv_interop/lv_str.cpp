@@ -1,7 +1,7 @@
 #include <cstddef>
 
 #ifdef _WIN32
-// for UTF8 to acii conversion on windows
+// for UTF8 to ansi conversion on windows
 #include <cstring>
 #include <Windows.h>
 #endif
@@ -151,8 +151,45 @@ void LV_StringHandle_t::copy_from_streambuf(const boost::asio::streambuf &buffer
     std::copy_n(boost::asio::buffers_begin(cb), bytes, begin());
 }
 
-void LV_StringHandle_t::copy_from_string(const std::string &str)
+void LV_StringHandle_t::copy_from_string(const std::string &str, bool convert_utf8)
 {
+#ifdef _WIN32
+    if (convert_utf8)
+    {
+        auto n_bytes_wide_string = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.length()), NULL, 0);
+
+        if (n_bytes_wide_string <= 0)
+        {
+            // the widestring would have zero length so size_to_fit and return
+            size_to_fit(0);
+            return;
+        }
+        // convert to wide-string
+        std::wstring wide(n_bytes_wide_string, 0);
+        MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.length()), &wide[0], n_bytes_wide_string);
+
+        // convert wide-string to ANSI
+        auto n_bytes_ansi = WideCharToMultiByte(CP_ACP, 0, &wide[0], n_bytes_wide_string, NULL, 0, NULL, NULL);
+
+        // resize string handle
+        size_to_fit(n_bytes_ansi);
+
+        if (n_bytes_ansi == 0)
+        {
+            return;
+        }
+
+        // copy ANSI into the string handle
+        WideCharToMultiByte(CP_ACP, 0, &wide[0], n_bytes_wide_string, begin(), n_bytes_ansi, NULL, NULL);
+
+        return;
+    }
+#endif
+
     size_to_fit(str.length());
     std::memcpy(begin(), str.data(), str.length());
+}
+
+LV_StringHandle_t::operator std::filesystem::path()  const{
+    return std::filesystem::path{std::string{begin(), size()}};
 }
