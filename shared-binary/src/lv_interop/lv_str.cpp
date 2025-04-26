@@ -130,6 +130,11 @@ LV_StringHandle_t::operator boost::string_view() const
     return boost::string_view{begin(), size()};
 }
 
+LV_StringHandle_t::operator boost::regex() const
+{
+    return boost::regex{std::string{begin(), size()}};
+}
+
 LV_StringHandle_t &LV_StringHandle_t::operator=(boost::string_view string)
 {
     size_to_fit(string.length());

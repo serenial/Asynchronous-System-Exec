@@ -1,3 +1,7 @@
+//          Copyright serenial.io and contributors.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See https://www.boost.org/LICENSE_1_0.txt)
+
 #pragma once
 
 #include <mutex>
@@ -19,7 +23,9 @@ namespace ase
     public:
         struct user_event_refs_t
         {
-            LV_UserEventRef_t std_out, std_err, did_exit;
+            LV_UserEventRef_t m_std_out, m_std_err, m_did_exit;
+            user_event_refs_t() = delete;
+            user_event_refs_t( LV_UserEventRef_t std_out, LV_UserEventRef_t std_err, LV_UserEventRef_t did_exit);
         };
 
         event_handler() = delete;

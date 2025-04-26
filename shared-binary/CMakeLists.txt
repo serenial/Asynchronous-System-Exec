@@ -41,7 +41,7 @@ target_include_directories(ase
 # plaform specific definitions
 if(WIN32)
   # windows.h definitions
-  target_compile_definitions(ase PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX /wd4068)
+  target_compile_definitions(ase PUBLIC WIN32_LEAN_AND_MEAN NOMINMAX /wd4068 WIN32_WINNT=0x0A00)
   
 elseif(UNIX)
   # link against static system libs
@@ -79,8 +79,12 @@ target_link_libraries(ase PRIVATE
   Boost::process Boost::filesystem Boost::thread
 )
 
+# create event test application
+add_executable(echotester ${CMAKE_CURRENT_SOURCE_DIR}/echo-tester.cpp)
+set_target_properties(echotester PROPERTIES OUTPUT_NAME "ase-test-console-app-${BITNESS}")
+
 # Install Shared Library
-INSTALL(TARGETS ase
+INSTALL(TARGETS ase echotester
   RUNTIME DESTINATION bin
   LIBRARY DESTINATION bin
 )

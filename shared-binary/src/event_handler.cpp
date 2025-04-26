@@ -1,4 +1,7 @@
-#include <memory>
+//          Copyright serenial.io and contributors.
+// Distributed under the Boost Software License, Version 1.0.
+//    (See https://www.boost.org/LICENSE_1_0.txt)
+
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -17,6 +20,7 @@ event_handler::event_handler(boost::string_view id, user_event_refs_t ue_refs, L
     m_out_string_handle(LV_StringHandle_t::create(4096)),
     m_err_string_handle(LV_StringHandle_t::create(4096))
 {
+    // copy id into local m_id_string_handle
     *m_id_string_handle = id;
 }
 
@@ -27,7 +31,7 @@ LV_MgErr_t event_handler::generate_std_out(std::shared_ptr<boost::asio::streambu
 
     LV_EventStdOut_t event_data(*m_out_string_handle, *m_id_string_handle);
 
-    return PostLVUserEvent(m_refs.std_out, &event_data);
+    return PostLVUserEvent(m_refs.m_std_out, &event_data);
 }
 
 LV_MgErr_t event_handler::generate_std_err(std::shared_ptr<boost::asio::streambuf> data, size_t bytes)
@@ -38,7 +42,7 @@ LV_MgErr_t event_handler::generate_std_err(std::shared_ptr<boost::asio::streambu
 
     LV_EventStdErr_t event_data(*m_err_string_handle, *m_id_string_handle);
 
-    return PostLVUserEvent(m_refs.std_err, &event_data);
+    return PostLVUserEvent(m_refs.m_std_err, &event_data);
 }
 
 LV_MgErr_t event_handler::generate_did_exit(int32_t exit_code, std::shared_ptr<boost::asio::streambuf>std_out_buf, size_t std_out_size, std::shared_ptr<boost::asio::streambuf>std_err_buf, size_t std_err_size)
@@ -54,7 +58,7 @@ LV_MgErr_t event_handler::generate_did_exit(int32_t exit_code, std::shared_ptr<b
 
     LV_EventExit_t event_data(exit_code, *remaining_out_handle, *remaining_err_handle, *m_id_string_handle);
 
-    return PostLVUserEvent(m_refs.did_exit, &event_data);
+    return PostLVUserEvent(m_refs.m_did_exit, &event_data);
 }
 
 event_handler::~event_handler(){
@@ -62,3 +66,9 @@ event_handler::~event_handler(){
     LV_StringHandle_t::destroy(m_err_string_handle);
     LV_StringHandle_t::destroy(m_id_string_handle);
 }
+
+event_handler::user_event_refs_t::user_event_refs_t( LV_UserEventRef_t std_out, LV_UserEventRef_t std_err, LV_UserEventRef_t did_exit):
+    m_std_out(std_out), m_std_err(std_err), m_did_exit(did_exit)
+    {
+        // nothing else to init
+    }

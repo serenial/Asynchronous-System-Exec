@@ -6,6 +6,7 @@
 
 #include <boost/utility/string_view.hpp>
 #include <boost/asio.hpp>
+#include <boost/regex.hpp>
 
 #include "./lv_types.hpp"
 
@@ -40,6 +41,7 @@ namespace ase
             static void destroy(LV_StringHandle_t* to_destroy);
             operator boost::string_view()  const;
             operator std::filesystem::path()  const;
+            operator boost::regex() const;
             LV_StringHandle_t& operator=(const char* c);
             LV_StringHandle_t& operator=(boost::string_view str);
             void consume_from_streambuf(std::shared_ptr<boost::asio::streambuf> buffer, size_t bytes, multibyte_conversion_t conversion);
