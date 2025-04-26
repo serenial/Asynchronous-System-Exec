@@ -34,13 +34,12 @@ extern "C"
         try
         {
             process p(
+                exe_path_handle, {"/c","DIR"}, std::filesystem::path{"C:\\serenial\\lib\\asynchronous-system-exec\\LabVIEW\\t"},
                 "_id_",
                 *refs_ptr,
-                boost::regex{"Approximate"},
+                boost::regex{"blahblah"},
                 boost::regex{"\n"},
-                true);
-
-            p.start(exe_path_handle, {"8.8.8.8"}, std::filesystem::path{});
+                LV_StringHandle_t::multibyte_conversion_t::UTF8_TO_CP_OEMCP);
 
                 auto x = p.wait_for_exit_code();
         }

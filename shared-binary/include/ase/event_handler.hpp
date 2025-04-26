@@ -24,15 +24,15 @@ namespace ase
 
         event_handler() = delete;
         ~event_handler();
-        event_handler(boost::string_view id, user_event_refs_t ue_refs, bool convert_utf8);
-        LV_MgErr_t generate_std_out(boost::asio::streambuf& data, size_t bytes);
-        LV_MgErr_t generate_std_err(boost::asio::streambuf& data, size_t bytes);
-        LV_MgErr_t generate_did_exit(int32_t exit_code, boost::asio::streambuf &std_out_buf, size_t std_out_size, boost::asio::streambuf &std_err_buf, size_t std_err_size);
+        event_handler(boost::string_view id, user_event_refs_t ue_refs, LV_StringHandle_t::multibyte_conversion_t conversion);
+        LV_MgErr_t generate_std_out(std::shared_ptr<boost::asio::streambuf> data, size_t bytes);
+        LV_MgErr_t generate_std_err(std::shared_ptr<boost::asio::streambuf> data, size_t bytes);
+        LV_MgErr_t generate_did_exit(int32_t exit_code, std::shared_ptr<boost::asio::streambuf> std_out_buf, size_t std_out_size, std::shared_ptr<boost::asio::streambuf> std_err_buf, size_t std_err_size);
 
     private:
         std::string m_out_str, m_err_str;
-        LV_StringHandle_t* m_id_string_handle, *m_out_string_handle, *m_err_string_handle;
-        const bool m_convert_utf8;
+        LV_StringHandle_t *m_id_string_handle, *m_out_string_handle, *m_err_string_handle;
+        const LV_StringHandle_t::multibyte_conversion_t m_conversion;
         const user_event_refs_t m_refs;
 
 #include "./lv_interop/set_packing.hpp"
