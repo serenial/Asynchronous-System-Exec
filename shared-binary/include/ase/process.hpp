@@ -33,15 +33,17 @@ namespace ase
     class process{
         public:
         process() = delete;
-        process( 
-            const std::filesystem::path& exe_path,
-            const std::vector<boost::string_view>& exe_args,
-            const std::filesystem::path& working_dir,
+        process(
             boost::string_view id, 
             event_handler::user_event_refs_t event_refs,
             const boost::regex& std_out_match_regex,
             const boost::regex& std_err_match_regex,
             const LV_StringHandle_t::multibyte_conversion_t conversion
+        );
+        void start_call(
+            const std::filesystem::path& exe_path,
+            const std::vector<boost::string_view>& exe_args,
+            const std::filesystem::path& working_dir
         );
         ~process();
         void write_std_in(boost::string_view);

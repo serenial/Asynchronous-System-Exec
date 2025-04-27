@@ -9,10 +9,7 @@
 
 using namespace ase;
 
-process::process( 
-    const std::filesystem::path& exe_path,
-    const std::vector<boost::string_view>& exe_args,
-    const std::filesystem::path& working_dir,
+process::process(
     boost::string_view id, 
     event_handler::user_event_refs_t event_refs,
     const boost::regex& std_out_match_regex,
@@ -63,6 +60,14 @@ process::process(
     boost::asio::async_read_until(m_std_out, *m_std_out_buf, m_std_out_regex, m_std_out_handler);
     boost::asio::async_read_until(m_std_err, *m_std_err_buf, m_std_err_regex, m_std_err_handler);
 
+    // make the process launch a different method call as catching and forwarding errors in the constructor is challenging
+}
+
+void process::start_call(
+    const std::filesystem::path& exe_path,
+    const std::vector<boost::string_view>& exe_args,
+    const std::filesystem::path& working_dir
+){
     // create a lambda which can pass variable args to the boost::process::process call
     auto execute_with_args = [=](auto &&...args)
     {

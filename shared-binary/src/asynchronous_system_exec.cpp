@@ -83,14 +83,17 @@ extern "C"
         try
         {
             *process_handle = new process(
-                exe_handle,
-                args_handle,
-                *use_working_dir ? working_dir_handle : std::filesystem::path{},
                 id_handle,
                 *user_event_refs_ptr,
                 std_out_regex_handle,
                 std_err_regex_handle,
                 conversion_type);
+
+                (*process_handle)->start_call(
+                exe_handle,
+                args_handle,
+                *use_working_dir ? working_dir_handle : std::filesystem::path{}
+            );
         }
         catch (...)
         {

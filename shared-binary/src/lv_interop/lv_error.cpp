@@ -16,6 +16,7 @@ namespace{
     
     // Defined Errors
     const int32_t ERR_BAD_REGEX_EXPRESSION= -300;
+    const int32_t ERR_UNABLE_TO_LAUNCH_EXE= -301;
 }
 
 void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char *caller_name)
@@ -35,6 +36,10 @@ void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char
     catch(boost::regex_error const &e){
         ss << "Bad regular-expression for the std-out or std-err match (" << e.what() << ")";
         m_err->code = ERR_BAD_REGEX_EXPRESSION;
+    }
+    catch(boost::system::system_error const &e){
+        ss << "Invalid executable or argument supplied (" << e.what() << ")";
+        m_err->code = ERR_UNABLE_TO_LAUNCH_EXE;
     }
     catch (LV_MemoryManagerException const &e)
     {
