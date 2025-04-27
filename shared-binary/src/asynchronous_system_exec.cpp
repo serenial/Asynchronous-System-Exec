@@ -158,7 +158,9 @@ extern "C"
 
     ASE_EXPORT LV_MgErr_t ase_close_std_in(
         LV_ErrorClusterPtr_t error_cluster_ptr,
-        process *process_ptr)
+        process *process_ptr,
+        LV_BooleanPtr_t already_closed
+    )
     {
         try
         {
@@ -166,7 +168,7 @@ extern "C"
             {
                 throw std::invalid_argument("Process pointer is invalid.");
             }
-            process_ptr->close_std_in();
+            *already_closed = process_ptr->close_std_in();
         }
         catch (...)
         {
@@ -179,7 +181,7 @@ extern "C"
         LV_ErrorClusterPtr_t error_cluster_ptr,
         process *process_ptr,
         int32_t timeout_ms,
-        LV_UserEventRef_t result_ref)
+        LV_Ptr_t<LV_UserEventRef_t> result_ref)
     {
         try
         {
@@ -191,7 +193,7 @@ extern "C"
             // we don't want to consume all of LabVIEW's threads waiting on these
             // so we will run this asynchronously in our own thread and signal
             // with a user event when done
-            std::thread t{[&]()
+            std::thread t{[=]()
                           {
                               try
                               {
@@ -207,10 +209,8 @@ extern "C"
                               {
                                   auto e = std::unique_ptr<LV_ErrorClusterPtr_t>(LV_ErrorClusterPtr_t::create(std::current_exception(), "wait on call (asynchronous thread)"));
 
-                                  PostLVUserEvent(result_ref, *e);
-                              }
-                          }};
-
+                                  PostLVUserEvent(*result_ref, *e);
+                              } }};
             t.detach();
         }
         catch (...)

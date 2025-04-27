@@ -131,9 +131,16 @@ void process::write_std_in(boost::string_view data)
     m_std_in.write_some(asio::buffer(data, data.length()));
 }
 
-void process::close_std_in()
+bool process::close_std_in()
 {
+    // check if already closed
+    if(!m_std_in.is_open()){
+        return true;
+    }
+
     m_std_in.close();
+
+    return false;
 }
 
 bool process::send_terminate()
@@ -167,6 +174,7 @@ process::~process()
     send_terminate();
     m_std_out.close();
     m_std_err.close();
+    m_std_in.close();
 
     m_io_run_thread.join();
 }

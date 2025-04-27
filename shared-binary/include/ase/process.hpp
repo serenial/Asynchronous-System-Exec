@@ -41,7 +41,7 @@ namespace ase
         );
         ~process();
         void write_std_in(boost::string_view);
-        void close_std_in();
+        bool close_std_in();
         bool send_terminate();
         bool wait_on_completion(std::chrono::milliseconds timeout);
         int32_t wait_for_exit_code();

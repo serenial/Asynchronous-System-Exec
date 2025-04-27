@@ -177,10 +177,8 @@
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Get Element TD from Array TD__ogtk.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Get Element TD from Array TD__ogtk.vi"/>
 			</Item>
 			<Item Name="configuration.lvclass" Type="LVClass" URL="../ase/configuration/configuration.lvclass"/>
-			<Item Name="serenial.io-ase.32.dll" Type="Document" URL="../serenial.io-ase/ase/serenial.io-ase.32.dll"/>
 			<Item Name="Start Call.vi" Type="VI" URL="../serenial.io-ase/ase/Start Call.vi"/>
 			<Item Name="Start Call (Command).vi" Type="VI" URL="../serenial.io-ase/ase/Start Call (Command).vi"/>
-			<Item Name="Start Call (Internal).vi" Type="VI" URL="../ase/ase/Start Call (Internal).vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build">
 			<Item Name="serenial.io-ase source" Type="Source Distribution">

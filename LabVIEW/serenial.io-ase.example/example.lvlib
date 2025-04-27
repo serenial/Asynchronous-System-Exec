@@ -13,6 +13,4 @@ Asynchronously call system executables with access to standard input and standar
 
 </Property>
 	<Item Name="API Usage Examples.vi" Type="VI" URL="../API Usage Examples.vi"/>
-	<Item Name="Example Custom Regex.lvclass" Type="LVClass" URL="../Example Custom Regex/Example Custom Regex.lvclass"/>
-	<Item Name="Example Custom ID.lvclass" Type="LVClass" URL="../Example Custom ID/Example Custom ID.lvclass"/>
 </Library>
