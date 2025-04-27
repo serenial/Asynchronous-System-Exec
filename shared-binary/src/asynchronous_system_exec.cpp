@@ -284,7 +284,11 @@ LV_ArgsListHandle_t::operator std::vector<boost::string_view>() const
 
     for (int i = 0; i < n; i++)
     {
-        args.push_back((*m_handle)->args[i]);
+        auto h = (*m_handle)->args[i];
+        // don't add empty string handles to the list - it causes an abort to be signalled
+        if(h.size()>0){
+            args.push_back(h);
+        }
     }
 
     return args;

@@ -139,6 +139,8 @@ char *LV_StringHandle_t::end() const
 
 LV_StringHandle_t::operator boost::string_view() const
 {
+    // force an allocation on an empty string so
+    // string view is backed by some valid memory
     return boost::string_view{begin(), size()};
 }
 
