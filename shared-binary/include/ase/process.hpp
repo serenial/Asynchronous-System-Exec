@@ -42,9 +42,10 @@ namespace ase
         ~process();
         void write_std_in(boost::string_view);
         void close_std_in();
-        void send_terminate();
+        bool send_terminate();
         bool wait_on_completion(std::chrono::milliseconds timeout);
         int32_t wait_for_exit_code();
+        static std::filesystem::path find_executable_by_name(std::filesystem::path exe_name);
         private:
         std::exception_ptr m_last_exception;
         const boost::regex m_std_out_regex, m_std_err_regex;

@@ -20,7 +20,7 @@ include(GenerateExportHeader)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # find boost
-find_package(Boost REQUIRED COMPONENTS process filesystem thread)
+find_package(Boost REQUIRED COMPONENTS process filesystem)
 
 # specify shared-library target
 add_library(ase SHARED)
@@ -29,7 +29,7 @@ add_library(ase SHARED)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt)
 
 # add compile definitions
-target_compile_definitions(ase PUBLIC ASE_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P})
+target_compile_definitions(ase PUBLIC ASE_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P} ASE_VERSION=\"${CMAKE_PROJECT_VERSION}\")
 
 target_include_directories(ase
   PUBLIC
@@ -76,15 +76,19 @@ math(EXPR BITNESS "8*${CMAKE_SIZEOF_VOID_P}")
 set_target_properties(ase PROPERTIES OUTPUT_NAME ase_${BITNESS}-${ase_shared_binary_VERSION_MAJOR})
 
 target_link_libraries(ase PRIVATE
-  Boost::process Boost::filesystem Boost::thread
+  Boost::process Boost::filesystem
+)
+
+# Install Shared Library
+INSTALL(TARGETS ase
+  RUNTIME DESTINATION ase/bin
+  LIBRARY DESTINATION ase/bin
 )
 
 # create event test application
 add_executable(echotester ${CMAKE_CURRENT_SOURCE_DIR}/echo-tester.cpp)
 set_target_properties(echotester PROPERTIES OUTPUT_NAME "ase-test-console-app-${BITNESS}")
 
-# Install Shared Library
-INSTALL(TARGETS ase echotester
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION bin
+INSTALL(TARGETS echotester
+  RUNTIME DESTINATION test-executable
 )

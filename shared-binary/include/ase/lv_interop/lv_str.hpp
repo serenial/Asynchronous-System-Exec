@@ -45,7 +45,8 @@ namespace ase
             LV_StringHandle_t& operator=(const char* c);
             LV_StringHandle_t& operator=(boost::string_view str);
             void consume_from_streambuf(std::shared_ptr<boost::asio::streambuf> buffer, size_t bytes, multibyte_conversion_t conversion);
-            void copy_from_string(const std::string& str, multibyte_conversion_t conversion);
+            void copy_from_char_ptr(const char*, multibyte_conversion_t conversion);
+            void copy_from_char_ptr(const wchar_t*, multibyte_conversion_t conversion);
         };
     }
 }

@@ -1,8 +1,0 @@
-Package: libserenial.io-ase
-Version: 2.0.0
-Architecture: x64
-Maintainer: john medland <john@serenial.io>
-Description: Binary files required by the serenial.io Asynchronous System Exec
-Source: gitlab.com/serenial/asynchronous-system-exec
-Priority: optional
-Section: libs

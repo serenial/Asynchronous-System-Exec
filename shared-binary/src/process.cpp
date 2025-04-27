@@ -136,9 +136,16 @@ void process::close_std_in()
     m_std_in.close();
 }
 
-void process::send_terminate()
+bool process::send_terminate()
 {
+    // check if already terminated
+    if(m_exit_future.wait_for(std::chrono::seconds(0)) == std::future_status::ready){
+        return true;
+    }
+
     m_signal.emit(asio::cancellation_type::terminal);
+
+    return false;
 }
 
 bool process::wait_on_completion(std::chrono::milliseconds timeout)
@@ -158,4 +165,8 @@ process::~process()
     m_std_err.close();
 
     m_io_run_thread.join();
+}
+
+std::filesystem::path process::find_executable_by_name(std::filesystem::path exe_name){
+    return boost::process::environment::find_executable(exe_name);
 }
