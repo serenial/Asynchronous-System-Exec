@@ -21,13 +21,11 @@
 			<Item Name="Pre-Build Action.vi" Type="VI" URL="../utilities/Pre-Build Action.vi"/>
 			<Item Name="Post-Build Action.vi" Type="VI" URL="../utilities/Post-Build Action.vi"/>
 		</Item>
-		<Item Name="test-binaries" Type="Folder">
-			<Item Name="ase-test-console-app-32.exe" Type="Document" URL="../test-binaries/ase-test-console-app-32.exe"/>
-			<Item Name="ase-test-console-app-64" Type="Document" URL="../test-binaries/ase-test-console-app-64"/>
-			<Item Name="ase-test-console-app-64.exe" Type="Document" URL="../test-binaries/ase-test-console-app-64.exe"/>
+		<Item Name="bin" Type="Folder" URL="../ase/ase/bin">
+			<Property Name="NI.DISK" Type="Bool">true</Property>
 		</Item>
-		<Item Name="packages" Type="Folder">
-			<Item Name="libserenial.io-ase_1.0.0_x64.ipk" Type="Document" URL="../packages/libserenial.io-ase_1.0.0_x64.ipk"/>
+		<Item Name="test-executable" Type="Folder" URL="../test-executable">
+			<Property Name="NI.DISK" Type="Bool">true</Property>
 		</Item>
 		<Item Name="ase.lvlib" Type="Library" URL="../ase/ase.lvlib"/>
 		<Item Name="ase.console.lvlib" Type="Library" URL="../ase.console/ase.console.lvlib"/>
@@ -182,6 +180,7 @@
 			<Item Name="serenial.io-ase.32.dll" Type="Document" URL="../serenial.io-ase/ase/serenial.io-ase.32.dll"/>
 			<Item Name="Start Call.vi" Type="VI" URL="../serenial.io-ase/ase/Start Call.vi"/>
 			<Item Name="Start Call (Command).vi" Type="VI" URL="../serenial.io-ase/ase/Start Call (Command).vi"/>
+			<Item Name="Start Call (Internal).vi" Type="VI" URL="../ase/ase/Start Call (Internal).vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build">
 			<Item Name="serenial.io-ase source" Type="Source Distribution">
@@ -230,7 +229,7 @@
 				<Property Name="Source[3].propertiesCount" Type="Int">1</Property>
 				<Property Name="Source[3].type" Type="Str">Container</Property>
 				<Property Name="Source[4].destinationIndex" Type="Int">0</Property>
-				<Property Name="Source[4].itemID" Type="Ref">/My Computer/packages/libserenial.io-ase_1.0.0_x64.ipk</Property>
+				<Property Name="Source[4].itemID" Type="Ref"></Property>
 				<Property Name="Source[4].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="Source[5].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[5].itemID" Type="Ref">/My Computer/ase.test.lvlib</Property>

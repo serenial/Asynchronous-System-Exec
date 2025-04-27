@@ -32,6 +32,10 @@ try{
     if(input == "exit") break;
     std::cout << input << std::endl;
   }
+
+  std::cout << "std-out-exit" ; // no newline
+  std::cerr << "std-err-exit" ; // no newline
+
 }
 catch(...){
   return -123546;

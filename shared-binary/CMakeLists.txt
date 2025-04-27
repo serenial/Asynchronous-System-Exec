@@ -29,7 +29,7 @@ add_library(ase SHARED)
 include(${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt)
 
 # add compile definitions
-target_compile_definitions(ase PUBLIC ASE_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P} ASE_VERSION=\"${CMAKE_PROJECT_VERSION}\")
+target_compile_definitions(ase PUBLIC ASE_BYTE_PACKING_${CMAKE_SIZEOF_VOID_P} ASE_VERSION=\"${ase_shared_binary_VERSION}\")
 
 target_include_directories(ase
   PUBLIC
@@ -81,8 +81,8 @@ target_link_libraries(ase PRIVATE
 
 # Install Shared Library
 INSTALL(TARGETS ase
-  RUNTIME DESTINATION ase/bin
-  LIBRARY DESTINATION ase/bin
+  RUNTIME DESTINATION ase/ase/bin
+  LIBRARY DESTINATION ase/ase/bin
 )
 
 # create event test application

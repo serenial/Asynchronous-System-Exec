@@ -55,7 +55,7 @@ process::process(
                             try{
                                 if (!ec)
                                 {
-                                    m_event_handler.generate_std_out(m_std_err_buf, transferred);
+                                    m_event_handler.generate_std_err(m_std_err_buf, transferred);
                                     boost::asio::async_read_until(m_std_err, *m_std_err_buf, m_std_err_regex, m_std_err_handler);
                                 } 
                             }
@@ -165,6 +165,10 @@ process::~process()
     m_std_err.close();
 
     m_io_run_thread.join();
+
+    if(m_last_exception != nullptr){
+        std::rethrow_exception(m_last_exception);
+    }
 }
 
 std::filesystem::path process::find_executable_by_name(std::filesystem::path exe_name){

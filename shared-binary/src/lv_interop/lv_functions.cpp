@@ -135,7 +135,7 @@ LV_MgErr_t lv_interop::PostLVUserEvent(LV_UserEventRef_t ref, void* data){
 #ifdef _WIN32
 extern "C"
 {
-    ASE_EXPORT LV_MgErr_t g_ar_tk_specify_lv_runtime_windows(const char * const path)
+    ASE_EXPORT LV_MgErr_t ase_specify_lv_runtime_windows(const char * const path)
     {
         // set the path
         lv_runtime_path_windows = path;
