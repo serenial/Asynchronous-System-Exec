@@ -30,7 +30,7 @@
 		<Item Name="ase.lvlib" Type="Library" URL="../ase/ase.lvlib"/>
 		<Item Name="ase.console.lvlib" Type="Library" URL="../ase.console/ase.console.lvlib"/>
 		<Item Name="ase.test.lvlib" Type="Library" URL="../ase.test/ase.test.lvlib"/>
-		<Item Name="example.lvlib" Type="Library" URL="../serenial.io-ase.example/example.lvlib"/>
+		<Item Name="ase.example.lvlib" Type="Library" URL="../ase.example/ase.example.lvlib"/>
 		<Item Name="Dependencies" Type="Dependencies">
 			<Item Name="vi.lib" Type="Folder">
 				<Item Name="Error Cluster From Error Code.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Error Cluster From Error Code.vi"/>
@@ -175,10 +175,8 @@
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Get Physical Units from TD__ogtk.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Get Physical Units from TD__ogtk.vi"/>
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Get TDEnum from TD__ogtk.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Get TDEnum from TD__ogtk.vi"/>
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Get Element TD from Array TD__ogtk.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Get Element TD from Array TD__ogtk.vi"/>
+				<Item Name="Enum to Array of Enums.vim" Type="VI" URL="/&lt;vilib&gt;/numeric/Enum to Array of Enums.vim"/>
 			</Item>
-			<Item Name="configuration.lvclass" Type="LVClass" URL="../ase/configuration/configuration.lvclass"/>
-			<Item Name="Start Call.vi" Type="VI" URL="../serenial.io-ase/ase/Start Call.vi"/>
-			<Item Name="Start Call (Command).vi" Type="VI" URL="../serenial.io-ase/ase/Start Call (Command).vi"/>
 		</Item>
 		<Item Name="Build Specifications" Type="Build">
 			<Item Name="serenial.io-ase source" Type="Source Distribution">

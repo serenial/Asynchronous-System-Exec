@@ -141,11 +141,7 @@ extern "C"
 
             try
             {
-                process_ptr->write_std_in(std_in_handle);
-            }
-            catch (boost::system::system_error &e)
-            {
-                *already_closed = false;
+                *already_closed = process_ptr->write_std_in(std_in_handle);
             }
             catch (...)
             {

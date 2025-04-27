@@ -46,7 +46,7 @@ namespace ase
             const std::filesystem::path& working_dir
         );
         ~process();
-        void write_std_in(boost::string_view);
+        bool write_std_in(boost::string_view);
         bool close_std_in();
         bool send_terminate();
         bool wait_on_completion(std::chrono::milliseconds timeout);

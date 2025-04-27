@@ -9,9 +9,6 @@
 </Property>
 	<Item Name="Private" Type="Folder">
 		<Property Name="NI.LibItem.Scope" Type="Int">2</Property>
-		<Item Name="Bad Regex.lvclass" Type="LVClass" URL="../Bad Regex/Bad Regex.lvclass"/>
-		<Item Name="Custom ID.lvclass" Type="LVClass" URL="../Custom ID/Custom ID.lvclass"/>
-		<Item Name="Custom Regex.lvclass" Type="LVClass" URL="../Custom Regex/Custom Regex.lvclass"/>
 		<Item Name="Default Test App Path.vi" Type="VI" URL="../Default Test App Path.vi"/>
 		<Item Name="Default Timeout.vi" Type="VI" URL="../Default Timeout.vi"/>
 		<Item Name="Invalid Handle Error Code.vi" Type="VI" URL="../Invalid Handle Error Code.vi"/>

@@ -119,9 +119,15 @@ void process::start_call(
     m_process_start_future.get();
 }
 
-void process::write_std_in(boost::string_view data)
+bool process::write_std_in(boost::string_view data)
 {
+    if(!m_std_in.is_open()){
+        return true;
+    }
+    
     m_std_in.write_some(asio::buffer(data, data.length()));
+
+    return false;
 }
 
 bool process::close_std_in()
