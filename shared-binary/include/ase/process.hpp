@@ -18,6 +18,10 @@
 #include <boost/asio.hpp>
 #include <boost/system/error_code.hpp> 
 
+#ifdef _WIN32
+#include <boost/process/windows/show_window.hpp>
+#endif
+
 #include "./event_handler.hpp"
 
 namespace ase
@@ -47,6 +51,50 @@ namespace ase
         int32_t wait_for_exit_code();
         static std::filesystem::path find_executable_by_name(std::filesystem::path exe_name);
         private:
+        // define a class with the template methods to get called by the boost-process lifetime hooks
+        // this includes both the windows and posix functions which have different signatures so do not 
+        // require #ifdef _WIN32-ing etc
+        class custom_initializer{
+            private:
+            std::promise<int> m_process_start_promise;
+            void set_error(const boost::process::error_code & ec){
+                try{
+                    boost::process::detail::do_throw_error(ec);
+                }
+                catch(...){
+                    m_process_start_promise.set_exception(std::current_exception());
+                }
+            }
+            void set_ok(){
+                m_process_start_promise.set_value(0);
+            }
+
+            public:
+            custom_initializer() = default;
+            std::shared_future<int> get_future(){
+                return m_process_start_promise.get_future();
+            }
+            template<typename Launcher>
+            void on_error(Launcher & launcher, const std::filesystem::path &executable, const char * const * (&cmd_line), const boost::process::error_code & ec){
+                set_error(ec);
+            }
+            template<typename Launcher>
+            void on_error(Launcher & launcher, const std::filesystem::path &executable, std::wstring &cmd_line, const boost::process::error_code & ec){
+                set_error(ec);
+            }
+            template<typename Launcher>
+            void on_success(Launcher & launcher, const std::filesystem::path &executable, const char * const * (&cmd_line)){
+                set_ok();
+            }
+            template<typename Launcher>
+            void on_success(Launcher & launcher, const std::filesystem::path &executable, std::wstring &cmd_line){
+                set_ok();
+            }
+            template<typename Launcher>
+            boost::system::error_code on_setup(Launcher & launcher, const std::filesystem::path &executable, std::wstring &cmd_line){
+                return boost::process::windows::show_window_hide.on_setup(launcher, executable, cmd_line);
+            }
+        };
         std::exception_ptr m_last_exception;
         const boost::regex m_std_out_regex, m_std_err_regex;
         asio::io_context m_io_context;
@@ -55,9 +103,10 @@ namespace ase
         asio::writable_pipe m_std_in;
         asio::readable_pipe m_std_out, m_std_err;
         boost::process::process_stdio m_process_io;
+        custom_initializer m_custom_initializer;
         asio::cancellation_signal m_signal;
         std::promise<int> m_exit_promise;
-        std::shared_future<int> m_exit_future;
+        std::shared_future<int> m_exit_future, m_process_start_future;
         std::thread m_io_run_thread;
         std::function<void(boost::system::error_code ec, size_t transferred)> m_std_out_handler, m_std_err_handler;
     };

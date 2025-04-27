@@ -5,10 +5,6 @@
 #include <boost/process.hpp>
 #include <boost/system/result.hpp>
 
-#ifdef _WIN32
-#include <boost/process/windows/show_window.hpp>
-#endif
-
 #include "ase/process.hpp"
 
 using namespace ase;
@@ -25,7 +21,6 @@ process::process(
 ):
     m_std_out_regex(std_out_match_regex),
     m_std_err_regex(std_err_match_regex),
-    m_io_context(),
     m_event_handler(id, event_refs, conversion),
     m_std_out_buf(std::make_shared<asio::streambuf>()),
     m_std_err_buf(std::make_shared<asio::streambuf>()),
@@ -34,8 +29,8 @@ process::process(
     m_std_err(m_io_context),
     m_process_io({m_std_in, m_std_out, m_std_err}),
     m_exit_future(m_exit_promise.get_future()),
-    m_io_run_thread([=]()
-                    { m_io_context.run(); }),
+    m_process_start_future(m_custom_initializer.get_future()),
+    m_io_run_thread([=](){ m_io_context.run(); }),
     m_last_exception(nullptr),
     m_std_out_handler([&](boost::system::error_code ec, size_t transferred)
                     {
@@ -68,7 +63,7 @@ process::process(
     boost::asio::async_read_until(m_std_out, *m_std_out_buf, m_std_out_regex, m_std_out_handler);
     boost::asio::async_read_until(m_std_err, *m_std_err_buf, m_std_err_regex, m_std_err_handler);
 
-    // create a lamda which can pass variable args to the boost::process::process call
+    // create a lambda which can pass variable args to the boost::process::process call
     auto execute_with_args = [=](auto &&...args)
     {
         boost::process::async_execute(
@@ -77,6 +72,7 @@ process::process(
                 exe_path,
                 exe_args,
                 m_process_io,
+                m_custom_initializer,
                 std::forward<decltype(args)>(args)...),
             asio::bind_cancellation_slot(m_signal.slot(),
                                          [&](boost::system::error_code ec, int exit_code)
@@ -104,16 +100,6 @@ process::process(
                                          }));
     };
 
-#ifdef _WIN32
-    if (working_dir.empty())
-    {
-        execute_with_args(boost::process::windows::show_window_hide);
-    }
-    else
-    {
-        execute_with_args(boost::process::process_start_dir(working_dir), boost::process::windows::show_window_hide);
-    }
-#else
     if (working_dir.empty())
     {
         execute_with_args();
@@ -123,7 +109,9 @@ process::process(
         execute_with_args(boost::process::process_start_dir(working_dir));
     }
 
-#endif
+    // wait on either launch or error
+    // if there was an error the exception will be thrown here
+    m_process_start_future.get();
 }
 
 void process::write_std_in(boost::string_view data)
