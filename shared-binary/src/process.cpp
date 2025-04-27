@@ -156,6 +156,10 @@ bool process::wait_on_completion(std::chrono::milliseconds timeout)
 int32_t process::wait_for_exit_code()
 {
     return m_exit_future.get();
+
+    if(m_last_exception != nullptr){
+        std::rethrow_exception(m_last_exception);
+    }
 }
 
 process::~process()
@@ -165,10 +169,6 @@ process::~process()
     m_std_err.close();
 
     m_io_run_thread.join();
-
-    if(m_last_exception != nullptr){
-        std::rethrow_exception(m_last_exception);
-    }
 }
 
 std::filesystem::path process::find_executable_by_name(std::filesystem::path exe_name){

@@ -1,4 +1,5 @@
 #include <cstring>
+#include <stdlib.h>
 #include <string>
 #include <sstream>
 #include <boost/regex.hpp>
@@ -60,4 +61,40 @@ void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char
     m_err->status = m_err->code != 0;
 
     m_err->source = ss.str();
+}
+
+LV_ErrorClusterPtr_t* LV_ErrorClusterPtr_t::create(std::exception_ptr ex, const char *caller_name){
+
+    auto p = new LV_ErrorClusterPtr_t();
+    p->m_err = reinterpret_cast<LV_Error_t*>(std::malloc(sizeof(LV_Error_t)));
+
+    if(p->m_err == nullptr){
+        throw std::runtime_error("Unable to allocate memory");
+    }
+
+    // allocate the string handle - this will need to be destroyed when the error ptr is destroyed
+    p->m_err->source = *LV_StringHandle_t::create(1024);
+
+    p->copy_from_exception(ex, caller_name);
+    
+    return p;
+}
+
+void LV_ErrorClusterPtr_t::destroy(LV_ErrorClusterPtr_t *p){
+
+    if(p == nullptr){
+        return;
+    }
+
+    // deallocate source string
+    LV_StringHandle_t::destroy(&(p->m_err->source));
+
+    // deallocate the rest of the memory
+    std::free(p->m_err);
+
+    p = nullptr;
+}
+
+LV_ErrorClusterPtr_t::operator void *() const{
+    return m_err;
 }

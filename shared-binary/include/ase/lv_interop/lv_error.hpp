@@ -17,10 +17,12 @@ namespace ase
         class LV_ErrorClusterPtr_t
         {
         public:
-            LV_ErrorClusterPtr_t() = delete;
             void copy_from_exception(std::exception_ptr ex, const char *caller_name);
-
+            static LV_ErrorClusterPtr_t* create(std::exception_ptr ex, const char *caller_name);
+            static void destroy(LV_ErrorClusterPtr_t* e);
+            operator void *() const;
         private:
+        LV_ErrorClusterPtr_t() = default;
 #include "./set_packing.hpp"
             struct LV_Error_t
             {

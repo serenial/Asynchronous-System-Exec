@@ -226,7 +226,7 @@ Distributed under the Boost Software License, Version 1.0.
 			<Property Name="NI.ClassItem.State" Type="Int">276832256</Property>
 		</Item>
 		<Item Name="Start Call (Exe-Args).vi" Type="VI" URL="../Start Call (Exe-Args).vi">
-			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!3,!!!!(!!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!$"!=!!?!!!8#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=Q!/4G6X)%&amp;423")97ZE&lt;'5!!!Z!-0````]%2'&amp;U91!!$%!Q`````Q**2!!!2A$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T%V.U97ZE98*E)%^V&gt;("V&gt;#ZD&gt;'Q!&amp;%"1!!)!"A!("%2B&gt;'%!!"J!=!!:!!%!#!^4&gt;'&amp;O:'&amp;S:#"0&gt;82Q&gt;81!21$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T%F.U97ZE98*E)%6S=G^S,G.U&lt;!!51&amp;!!!A!'!!=%2'&amp;U91!!'E"Q!"E!!1!+$F.U97ZE98*E)%6S=G^S!!!01!-!#56Y;81A1W^E:1!;1$$`````%&amp;*F&lt;7&amp;J&lt;GFO:S"4&gt;'20&gt;81!!"J!-0````]15G6N97FO;7ZH)&amp;.U:%6S=A!!2Q$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T$%2J:#"&amp;?'FU,G.U&lt;!!=1&amp;!!"!!-!!=!$1!/#%2J:#"&amp;?'FU!!!51(!!'1!"!!])2'FE)%6Y;81!!&amp;5!]1!!!!!!!!!$#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=R2&amp;&gt;G6O&gt;#"3:7:F=G6O9W6T,G.U&lt;!!C1&amp;!!!Q!*!!M!%""&amp;&gt;G6O&gt;#"3:7:F=G6O9W6T!!!M1$$`````)V.U:#"0&gt;81A5X2S:7&amp;N,6.Q&lt;'FU)&amp;*F:U6Y=#"1982U:8*O!#R!-0````]D5X2E)%6S=C"4&gt;(*F97UN5X"M;81A5G6H28BQ)&amp;"B&gt;(2F=GY!HA$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T)&amp;&gt;J&lt;G2P&gt;X-A662'/#"$&lt;WZW:8*T;7^O)%VP:'5O9X2M!&amp;^!&amp;1!$'%ZP&lt;G5A+&amp;"B=X-A6'BS&lt;X6H;#"66%9Y+2"5&lt;S""1V!A1W^E:3"197&gt;F%&amp;2P)%^&amp;43"$&lt;W2F)&amp;"B:W5!!"&gt;8;7ZE&lt;X&gt;T)&amp;652DAA1W^O&gt;G6S=WFP&lt;A"3!0%!!!!!!!!!!QFB=W5O&lt;(:M;7),98.F,GRW9WRB=X-21W^O:GFH&gt;8*B&gt;'FP&lt;CZD&gt;'Q!)E"1!!1!%A!4!!=!&amp;!^"5U5A3'&amp;O:'RF)&amp;2Z='5!&amp;E"1!!-!!!!"!!)):8*S&lt;X)A;7Y!!%*!-P````]Z6W^S;WFO:S"%;8*F9X2P=HEA+'2F:G&amp;V&lt;(1A0%ZP&gt;#"")&amp;"B&gt;'A_)#UA5XFT&gt;'6N)%2F:G&amp;V&lt;(1J!"*!-0````]*18*H&gt;7VF&lt;H2T!#B!1!!"`````Q!9'E&amp;S:X6N:7ZU=S!I2'6G986M&gt;$IA27VQ&gt;(EJ!!!91$,`````$U6Y:7.V&gt;'&amp;C&lt;'5A5'&amp;U;!"5!0!!$!!$!!1!"!!&amp;!!1!"!!2!"5!&amp;A!8!"E!'A-!!(A!!!U)!!!!!!!!!!!!!!E!!!!!!!!!!!!!!!!!!!!!!!!!#A!!!!!!!!!#!!!!%!!!!!!"!"M!!!!!</Property>
+			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!34!!!!(!!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!$"!=!!?!!!8#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=Q!/4G6X)%&amp;423")97ZE&lt;'5!!!Z!-0````]%2'&amp;U91!!$%!Q`````Q**2!!!2A$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T%V.U97ZE98*E)%^V&gt;("V&gt;#ZD&gt;'Q!&amp;%"1!!)!"A!("%2B&gt;'%!!"J!=!!:!!%!#!^4&gt;'&amp;O:'&amp;S:#"0&gt;82Q&gt;81!21$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T%F.U97ZE98*E)%6S=G^S,G.U&lt;!!51&amp;!!!A!'!!=%2'&amp;U91!!'E"Q!"E!!1!+$F.U97ZE98*E)%6S=G^S!!!01!-!#56Y;81A1W^E:1!;1$$`````%&amp;*F&lt;7&amp;J&lt;GFO:S"4&gt;'20&gt;81!!"J!-0````]15G6N97FO;7ZH)&amp;.U:%6S=A!!2Q$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T$%2J:#"&amp;?'FU,G.U&lt;!!=1&amp;!!"!!-!!=!$1!/#%2J:#"&amp;?'FU!!!51(!!'1!"!!])2'FE)%6Y;81!!&amp;5!]1!!!!!!!!!$#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=R2&amp;&gt;G6O&gt;#"3:7:F=G6O9W6T,G.U&lt;!!C1&amp;!!!Q!*!!M!%""&amp;&gt;G6O&gt;#"3:7:F=G6O9W6T!!!M1$$`````)V.U:#"0&gt;81A5X2S:7&amp;N,6.Q&lt;'FU)&amp;*F:U6Y=#"1982U:8*O!#R!-0````]D5X2E)%6S=C"4&gt;(*F97UN5X"M;81A5G6H28BQ)&amp;"B&gt;(2F=GY!HA$R!!!!!!!!!!-*98.F,GRW&lt;'FC#W&amp;T:3ZM&gt;G.M98.T)&amp;&gt;J&lt;G2P&gt;X-A662'/#"$&lt;WZW:8*T;7^O)%VP:'5O9X2M!&amp;^!&amp;1!$'%ZP&lt;G5A+&amp;"B=X-A6'BS&lt;X6H;#"66%9Y+2"5&lt;S""1V!A1W^E:3"197&gt;F%&amp;2P)%^&amp;43"$&lt;W2F)&amp;"B:W5!!"&gt;8;7ZE&lt;X&gt;T)&amp;652DAA1W^O&gt;G6S=WFP&lt;A";!0%!!!!!!!!!!QFB=W5O&lt;(:M;7),98.F,GRW9WRB=X-21W^O:GFH&gt;8*B&gt;'FP&lt;CZD&gt;'Q!+E"1!!1!%A!4!!=!&amp;"&gt;$&lt;WZG;7&gt;V=G&amp;U;7^O)#B%:7:B&gt;7RU+1!71&amp;!!!Q!!!!%!!ABF=H*P=C"J&lt;A!!1E!S`````TF8&lt;X*L;7ZH)%2J=G6D&gt;'^S?3!I:'6G986M&gt;#!]4G^U)%%A5'&amp;U;$YA,3"4?8.U:7UA2'6G986M&gt;#E!%E!Q`````QF"=G&gt;V&lt;76O&gt;(-!+%"!!!(`````!"A;18*H&gt;7VF&lt;H2T)#B%:7:B&gt;7RU/C"&amp;&lt;8"U?3E!!"B!-P````]028BF9X6U97*M:3"1982I!&amp;1!]!!-!!-!"!!%!!5!"!!%!"%!&amp;1!7!"=!'1!;!Q!!?!!!$1A!!!!!!!!!!!!!#1!!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!!!!)!!!!1!!!!!!%!'Q!!!!!</Property>
 			<Property Name="NI.ClassItem.ExecutionSystem" Type="Int">-1</Property>
 			<Property Name="NI.ClassItem.Flags" Type="Int">16777216</Property>
 			<Property Name="NI.ClassItem.IsStaticMethod" Type="Bool">true</Property>
@@ -287,44 +287,6 @@ Distributed under the Boost Software License, Version 1.0.
 			<Property Name="NI.ClassItem.MethodScope" Type="UInt">1</Property>
 			<Property Name="NI.ClassItem.Priority" Type="Int">1</Property>
 			<Property Name="NI.ClassItem.State" Type="Int">276832256</Property>
-		</Item>
-	</Item>
-	<Item Name="VIs for Override" Type="Folder">
-		<Item Name="UTF-8 Mode Windows.vi" Type="VI" URL="../UTF-8 Mode Windows.vi">
-			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!%$!!!!#1!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!"J!)226=W5A662',4AA&lt;WYA6WFO:'^X=Q!!)%"1!!-!!!!"!!)4:8*S&lt;X)A;7YA+'ZP)'6S=G^S+1!M1(!!(A!!&amp;QFB=W5O&lt;(:M;7),98.F,GRW9WRB=X-!#E&amp;423")97ZE&lt;'5!!&amp;1!]!!-!!-!"!!&amp;!!1!"!!%!!1!"!!'!!1!"!!(!A!!?!!!$1A!!!!!!!!*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!!!!!!!!#1!!!!!!%!#!!!!!!</Property>
-			<Property Name="NI.ClassItem.ExecutionSystem" Type="Int">-1</Property>
-			<Property Name="NI.ClassItem.Flags" Type="Int">16777344</Property>
-			<Property Name="NI.ClassItem.IsStaticMethod" Type="Bool">false</Property>
-			<Property Name="NI.ClassItem.MethodScope" Type="UInt">1</Property>
-			<Property Name="NI.ClassItem.Priority" Type="Int">1</Property>
-			<Property Name="NI.ClassItem.State" Type="Int">8396800</Property>
-		</Item>
-		<Item Name="Event Identifier.vi" Type="VI" URL="../Event Identifier.vi">
-			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!%$!!!!#1!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!"J!-0````]128:F&lt;H1A372F&lt;H2J:GFF=A!!)%"1!!-!!!!"!!)4:8*S&lt;X)A;7YA+'ZP)'6S=G^S+1!M1(!!(A!!&amp;QFB=W5O&lt;(:M;7),98.F,GRW9WRB=X-!#E&amp;423")97ZE&lt;'5!!&amp;1!]!!-!!-!"!!&amp;!!1!"!!%!!1!"!!'!!1!"!!(!A!!?!!!$1A!!!!!!!!*!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!+!!!!!!!!!!!!!!#1!!!!!!%!#!!!!!!</Property>
-			<Property Name="NI.ClassItem.ExecutionSystem" Type="Int">-1</Property>
-			<Property Name="NI.ClassItem.Flags" Type="Int">16777344</Property>
-			<Property Name="NI.ClassItem.IsStaticMethod" Type="Bool">false</Property>
-			<Property Name="NI.ClassItem.MethodScope" Type="UInt">1</Property>
-			<Property Name="NI.ClassItem.Priority" Type="Int">1</Property>
-			<Property Name="NI.ClassItem.State" Type="Int">8396800</Property>
-		</Item>
-		<Item Name="Stream Split Character Match RegExp Std Error.vi" Type="VI" URL="../Stream Split Character Match RegExp Std Error.vi">
-			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!%&gt;!!!!#1!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!$2!-0````]L5X2S:7&amp;N)&amp;.Q&lt;'FU)%.I98*B9X2F=C".982D;#"3:7&gt;&amp;?(!A5X2E)%6S=A!A1&amp;!!!Q!!!!%!!B.F=H*P=C"J&lt;C!I&lt;G]A:8*S&lt;X)J!#R!=!!?!!!8#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=Q!+16.&amp;)%BB&lt;G2M:1!!6!$Q!!Q!!Q!%!!5!"!!%!!1!"!!%!!9!"!!%!!=#!!"Y!!!.#!!!!!!!!!E!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!I!!!!!!!!!!!!!!*!!!!!!!1!)!!!!!!</Property>
-			<Property Name="NI.ClassItem.ExecutionSystem" Type="Int">-1</Property>
-			<Property Name="NI.ClassItem.Flags" Type="Int">16777344</Property>
-			<Property Name="NI.ClassItem.IsStaticMethod" Type="Bool">false</Property>
-			<Property Name="NI.ClassItem.MethodScope" Type="UInt">1</Property>
-			<Property Name="NI.ClassItem.Priority" Type="Int">1</Property>
-			<Property Name="NI.ClassItem.State" Type="Int">8396800</Property>
-		</Item>
-		<Item Name="Stream Split Character Match RegExp Std Out.vi" Type="VI" URL="../Stream Split Character Match RegExp Std Out.vi">
-			<Property Name="NI.ClassItem.ConnectorPane" Type="Bin">)!#!!!!!!!)!"1!&amp;!!!-!%!!!@````]!!!!"!!%!!!%&gt;!!!!#1!-1#%'=X2B&gt;(6T!!!,1!-!"'.P:'5!!""!-0````]'=W^V=G.F!!!71&amp;!!!Q!!!!%!!AFF=H*P=C"P&gt;81!"!!!!$2!-0````]L5X2S:7&amp;N)&amp;.Q&lt;'FU)%.I98*B9X2F=C".982D;#"3:7&gt;&amp;?(!A5X2E)%^V&gt;!!A1&amp;!!!Q!!!!%!!B.F=H*P=C"J&lt;C!I&lt;G]A:8*S&lt;X)J!#R!=!!?!!!8#7&amp;T:3ZM&gt;GRJ9ANB=W5O&lt;(:D&lt;'&amp;T=Q!+16.&amp;)%BB&lt;G2M:1!!6!$Q!!Q!!Q!%!!5!"!!%!!1!"!!%!!9!"!!%!!=#!!"Y!!!.#!!!!!!!!!E!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!I!!!!!!!!!!!!!!*!!!!!!!1!)!!!!!!</Property>
-			<Property Name="NI.ClassItem.ExecutionSystem" Type="Int">-1</Property>
-			<Property Name="NI.ClassItem.Flags" Type="Int">16777344</Property>
-			<Property Name="NI.ClassItem.IsStaticMethod" Type="Bool">false</Property>
-			<Property Name="NI.ClassItem.MethodScope" Type="UInt">1</Property>
-			<Property Name="NI.ClassItem.Priority" Type="Int">1</Property>
-			<Property Name="NI.ClassItem.State" Type="Int">8396800</Property>
 		</Item>
 	</Item>
 </LVClass>

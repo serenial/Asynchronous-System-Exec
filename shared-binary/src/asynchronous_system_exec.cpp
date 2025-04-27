@@ -6,7 +6,7 @@
 #define ASE_VERSION "X.Y.Z"
 #endif
 
-#include <boost/filesystem.hpp>
+#include <system_error>
 
 #include "ase/process.hpp"
 #include "ase/lv_interop/lv_error.hpp"
@@ -179,8 +179,7 @@ extern "C"
         LV_ErrorClusterPtr_t error_cluster_ptr,
         process *process_ptr,
         int32_t timeout_ms,
-        LV_BooleanPtr_t timed_out
-    )
+        LV_UserEventRef_t result_ref)
     {
         try
         {
@@ -188,14 +187,31 @@ extern "C"
             {
                 throw std::invalid_argument("Process pointer is invalid.");
             }
-            
-            if(timeout_ms < 0){
-                process_ptr->wait_for_exit_code();
-                return LV_ERR_noError;
-            }
 
-            *timed_out = !process_ptr->wait_on_completion(std::chrono::milliseconds(timeout_ms));
+            // we don't want to consume all of LabVIEW's threads waiting on these
+            // so we will run this asynchronously in our own thread and signal
+            // with a user event when done
+            std::thread t{[&]()
+                          {
+                              try
+                              {
+                                  if (timeout_ms < 0)
+                                  {
+                                      process_ptr->wait_for_exit_code();
+                                      throw std::system_error(0, std::generic_category());
+                                  }
 
+                                  throw std::system_error(process_ptr->wait_on_completion(std::chrono::milliseconds(timeout_ms)) ? 0 : 56, std::generic_category());
+                              }
+                              catch (...)
+                              {
+                                  auto e = std::unique_ptr<LV_ErrorClusterPtr_t>(LV_ErrorClusterPtr_t::create(std::current_exception(), "wait on call (asynchronous thread)"));
+
+                                  PostLVUserEvent(result_ref, *e);
+                              }
+                          }};
+
+            t.detach();
         }
         catch (...)
         {
@@ -207,8 +223,7 @@ extern "C"
     ASE_EXPORT LV_MgErr_t ase_send_terminate(
         LV_ErrorClusterPtr_t error_cluster_ptr,
         process *process_ptr,
-        LV_BooleanPtr_t already_terminated
-    )
+        LV_BooleanPtr_t already_terminated)
     {
         try
         {
@@ -229,20 +244,19 @@ extern "C"
         LV_ErrorClusterPtr_t error_cluster_ptr,
         LV_StringHandle_t exe_name,
         LV_ConversionEnum_t conversion,
-        LV_BooleanPtr_t found
-    )
+        LV_BooleanPtr_t found)
     {
         try
         {
-            auto result  = process::find_executable_by_name(exe_name);
-            
-            if(result.empty()){
+            auto result = process::find_executable_by_name(exe_name);
+
+            if (result.empty())
+            {
                 return LV_ERR_noError;
             }
 
             *found = true;
             exe_name.copy_from_char_ptr(result.c_str(), conversion);
-
         }
         catch (...)
         {
@@ -250,8 +264,6 @@ extern "C"
         }
         return LV_ERR_noError;
     }
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////
