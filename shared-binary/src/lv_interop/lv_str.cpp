@@ -17,7 +17,7 @@ using namespace lv_interop;
 namespace
 {
 
-    #ifdef _WIN32
+#ifdef _WIN32
     std::optional<UINT> to_code_page_flag(LV_StringHandle_t::multibyte_conversion_t conversion_type){
 
         switch(conversion_type){
@@ -34,7 +34,7 @@ namespace
 
             return {};
     }
-    #endif
+#endif
 
 
     bool convert_and_copy_utf8(const char* c, size_t length ,LV_StringHandle_t dest, LV_StringHandle_t::multibyte_conversion_t conversion_type)
@@ -217,6 +217,7 @@ void LV_StringHandle_t::copy_from_char_ptr(const wchar_t* c, LV_StringHandle_t::
 
     if (conversion!=multibyte_conversion_t::NO_CONVERSION)
     {
+#ifdef _WIN32
         auto cpf_opt = to_code_page_flag(conversion);
 
         // convert wide-string to ANSI
@@ -234,6 +235,7 @@ void LV_StringHandle_t::copy_from_char_ptr(const wchar_t* c, LV_StringHandle_t::
         WideCharToMultiByte(*cpf_opt, 0, c, length, begin(), n_ansi_chars, nullptr, nullptr);
 
         return;
+#endif
     }
 
     // not converting - just copy wide-string bytes into string handle
