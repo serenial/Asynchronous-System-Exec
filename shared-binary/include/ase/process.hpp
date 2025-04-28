@@ -54,8 +54,7 @@ namespace ase
         static std::filesystem::path find_executable_by_name(std::filesystem::path exe_name);
         private:
         // define a class with the template methods to get called by the boost-process lifetime hooks
-        // this includes both the windows and posix functions which have different signatures so do not 
-        // require #ifdef _WIN32-ing etc
+        // this includes both the windows and posix functions which have different signatures
         class custom_initializer{
             private:
             std::promise<int> m_process_start_promise;
@@ -94,7 +93,11 @@ namespace ase
             }
             template<typename Launcher>
             boost::system::error_code on_setup(Launcher & launcher, const std::filesystem::path &executable, std::wstring &cmd_line){
+                #ifdef _WIN32
                 return boost::process::windows::show_window_hide.on_setup(launcher, executable, cmd_line);
+                #endif
+
+                return boost::system::error_code();
             }
         };
         std::exception_ptr m_last_exception;

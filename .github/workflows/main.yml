@@ -47,5 +47,6 @@ jobs:
       with:
         name: ${{ env.VCPKG_DEFAULT_TRIPLET }}
         path: |
-         ${{ github.workspace }}/bin
+         ${{ github.workspace }}/ase/ase/bin
+         ${{ github.workspace }}/test-executable/
          ${{ github.workspace }}/build/vcpkg_installed/**/share
