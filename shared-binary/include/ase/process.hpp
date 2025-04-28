@@ -114,5 +114,6 @@ namespace ase
         std::shared_future<int> m_exit_future, m_process_start_future;
         std::thread m_io_run_thread;
         std::function<void(boost::system::error_code ec, size_t transferred)> m_std_out_handler, m_std_err_handler;
+        std::unique_ptr<boost::process::process> m_proc;
     };
 }

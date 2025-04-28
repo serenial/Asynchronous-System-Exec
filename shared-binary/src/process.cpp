@@ -71,48 +71,48 @@ void process::start_call(
     // create a lambda which can pass variable args to the boost::process::process call
     auto execute_with_args = [=](auto &&...args)
     {
-        boost::process::async_execute(
-            boost::process::process(
+        return std::make_unique<boost::process::process>(
                 m_io_context,
                 exe_path,
                 exe_args,
                 m_process_io,
                 m_custom_initializer,
-                std::forward<decltype(args)>(args)...),
-            asio::bind_cancellation_slot(m_signal.slot(),
-                                         [&](boost::system::error_code ec, int exit_code)
-                                         {
-                                            try{
-                                                if (!ec)
-                                                {
-                                                    // cancel any pending async_read operations
-                                                    m_std_out.cancel();
-                                                    m_std_err.cancel();
-                                                    // generate did_exit with any contents remaining in the buffers
-                                                    m_event_handler.generate_did_exit(exit_code, m_std_out_buf, m_std_out_buf->size(), m_std_err_buf, m_std_err_buf->size());
-                                                }
-                                            }
-                                            catch(...){
-                                                // store this exception in the promise
-                                                m_exit_promise.set_exception(std::current_exception());
-                                            }
-                                            try{
-                                                m_exit_promise.set_value(exit_code);
-                                            }
-                                            catch(...){
-                                                m_last_exception = std::current_exception();
-                                            }
-                                         }));
+                std::forward<decltype(args)>(args)...);
     };
 
     if (working_dir.empty())
     {
-        execute_with_args();
+        m_proc = execute_with_args();
     }
     else
     {
-        execute_with_args(boost::process::process_start_dir(working_dir));
+        m_proc = execute_with_args(boost::process::process_start_dir(working_dir));
     }
+
+    // wait on the result
+    m_proc->async_wait([&](boost::system::error_code ec, int exit_code)
+                                     {
+                                        try{
+                                            if (!ec)
+                                            {
+                                                // cancel any pending async_read operations
+                                                m_std_out.cancel();
+                                                m_std_err.cancel();
+                                                // generate did_exit with any contents remaining in the buffers
+                                                m_event_handler.generate_did_exit(exit_code, m_std_out_buf, m_std_out_buf->size(), m_std_err_buf, m_std_err_buf->size());
+                                            }
+                                        }
+                                        catch(...){
+                                            // store this exception in the promise
+                                            m_exit_promise.set_exception(std::current_exception());
+                                        }
+                                        try{
+                                            m_exit_promise.set_value(exit_code);
+                                        }
+                                        catch(...){
+                                            m_last_exception = std::current_exception();
+                                        }
+                                     });
 
     // wait on either launch or error
     // if there was an error the exception will be thrown here
@@ -145,11 +145,11 @@ bool process::close_std_in()
 bool process::send_terminate()
 {
     // check if already terminated
-    if(m_exit_future.wait_for(std::chrono::seconds(0)) == std::future_status::ready){
+    if(!m_proc->running()){
         return true;
     }
 
-    m_signal.emit(asio::cancellation_type::terminal);
+    m_proc->terminate();
 
     return false;
 }
