@@ -28,10 +28,8 @@ jobs:
     - uses: actions/checkout@v4
       with:
         submodules: true
+  
     - uses: lukka/get-cmake@latest
-    - name: Install OS dependencies
-      if: ${{ matrix.os == 'ubuntu-latest' }}
-      run: sudo apt install -y build-essential g++ python3 zip unzip tar curl
     
     - name: Setup VCPKG
       uses: lukka/run-vcpkg@v11
@@ -45,7 +43,7 @@ jobs:
     - name: Store Build Output
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ env.VCPKG_DEFAULT_TRIPLET }}
+        name: async_system_exec_${{ env.VCPKG_DEFAULT_TRIPLET }}
         path: |
          ${{ github.workspace }}/ase/ase/bin
          ${{ github.workspace }}/test-executable/
