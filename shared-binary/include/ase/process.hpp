@@ -112,8 +112,8 @@ namespace ase
         asio::cancellation_signal m_signal;
         std::promise<int> m_exit_promise;
         std::shared_future<int> m_exit_future, m_process_start_future;
+        asio::executor_work_guard<asio::io_context::executor_type> m_work_guard;
         std::thread m_io_run_thread;
         std::function<void(boost::system::error_code ec, size_t transferred)> m_std_out_handler, m_std_err_handler;
-        std::unique_ptr<boost::process::process> m_proc;
     };
 }

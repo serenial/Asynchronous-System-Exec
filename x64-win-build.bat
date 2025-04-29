@@ -12,6 +12,8 @@ if "%1" == "debug" (
     echo ** Building debug ***
 )
 
+call vcpkg/bootstrap-vcpkg.bat
+
 cd %SCRIPT_DIR%
 
 ::REM vcpkg can create a cmd context with all the settings we need but we cannot interact with 
