@@ -86,7 +86,7 @@ void process::start_call(
                                                  m_std_out.cancel();
                                                  m_std_err.cancel();
                                                  // generate did_exit with any contents remaining in the buffers
-                                                 m_event_handler.generate_did_exit(exit_code, m_std_out_buf, m_std_out_buf->size(), m_std_err_buf, m_std_err_buf->size());
+                                                 m_event_handler.generate_did_exit((ec)? ec.value() : exit_code, m_std_out_buf, m_std_out_buf->size(), m_std_err_buf, m_std_err_buf->size());
                                              }
                                              catch (...)
                                              {
