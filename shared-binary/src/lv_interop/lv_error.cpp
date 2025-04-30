@@ -34,11 +34,11 @@ void LV_ErrorClusterPtr_t::copy_from_exception(std::exception_ptr ex, const char
         }
     }
     catch(boost::regex_error const &e){
-        ss << "Bad regular-expression for the std-out or std-err match (" << e.what() << ")";
+        ss << "Bad regular-expression for the std-out or std-err match.\n\n(" << e.what() << ")";
         m_err->code = ERR_BAD_REGEX_EXPRESSION;
     }
     catch(boost::system::system_error const &e){
-        ss << "Invalid executable or argument supplied (" << e.what() << ")";
+        ss << "Invalid executable or argument supplied.\n\n(" << e.what() << ")";
         m_err->code = ERR_UNABLE_TO_LAUNCH_EXE;
     }
     catch (LV_MemoryManagerException const &e)

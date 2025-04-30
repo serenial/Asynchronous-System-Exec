@@ -92,7 +92,6 @@
 				<Item Name="Less Comparable.lvclass" Type="LVClass" URL="/&lt;vilib&gt;/Comparison/Less/Less Comparable/Less Comparable.lvclass"/>
 				<Item Name="Sort 1D Array Core.vim" Type="VI" URL="/&lt;vilib&gt;/Array/Helpers/Sort 1D Array Core.vim"/>
 				<Item Name="Less.vim" Type="VI" URL="/&lt;vilib&gt;/Comparison/Less.vim"/>
-				<Item Name="Trim Whitespace One-Sided.vi" Type="VI" URL="/&lt;vilib&gt;/Utility/error.llb/Trim Whitespace One-Sided.vi"/>
 				<Item Name="Caraya.lvlib" Type="Library" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/Caraya/Caraya.lvlib"/>
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Timestamp to ISO8601 UTC DateTime.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Timestamp to ISO8601 UTC DateTime.vi"/>
 				<Item Name="7842910552F72B45FFAA5B67DFEBCBC5Get Local UTC Offset.vi" Type="VI" URL="/&lt;vilib&gt;/addons/_JKI Toolkits/_Caraya_internal_deps/7842910552F72B45FFAA5B67DFEBCBC5Get Local UTC Offset.vi"/>
@@ -124,7 +123,6 @@
 				<Item Name="Open URL in Default Browser.vi" Type="VI" URL="/&lt;vilib&gt;/Platform/browser.llb/Open URL in Default Browser.vi"/>
 				<Item Name="Open URL in Default Browser (string).vi" Type="VI" URL="/&lt;vilib&gt;/Platform/browser.llb/Open URL in Default Browser (string).vi"/>
 				<Item Name="Open URL in Default Browser core.vi" Type="VI" URL="/&lt;vilib&gt;/Platform/browser.llb/Open URL in Default Browser core.vi"/>
-				<Item Name="System Exec.vi" Type="VI" URL="/&lt;vilib&gt;/Platform/system.llb/System Exec.vi"/>
 				<Item Name="Open URL in Default Browser (path).vi" Type="VI" URL="/&lt;vilib&gt;/Platform/browser.llb/Open URL in Default Browser (path).vi"/>
 				<Item Name="Path to URL.vi" Type="VI" URL="/&lt;vilib&gt;/printing/PathToURL.llb/Path to URL.vi"/>
 				<Item Name="Path to URL inner.vi" Type="VI" URL="/&lt;vilib&gt;/printing/PathToURL.llb/Path to URL inner.vi"/>
@@ -190,7 +188,6 @@
 				<Property Name="Bld_autoIncrement" Type="Bool">true</Property>
 				<Property Name="Bld_buildCacheID" Type="Str">{542D59D5-36CD-457B-A4E1-C793476DD282}</Property>
 				<Property Name="Bld_buildSpecName" Type="Str">source-distribution</Property>
-				<Property Name="Bld_excludedDirectoryCount" Type="Int">6</Property>
 				<Property Name="Bld_excludedDirectory[0]" Type="Path">vi.lib</Property>
 				<Property Name="Bld_excludedDirectory[0].pathType" Type="Str">relativeToAppDir</Property>
 				<Property Name="Bld_excludedDirectory[1]" Type="Path">resource/objmgr</Property>
@@ -201,6 +198,7 @@
 				<Property Name="Bld_excludedDirectory[4].pathType" Type="Str">relativeToAppDir</Property>
 				<Property Name="Bld_excludedDirectory[5]" Type="Path">user.lib</Property>
 				<Property Name="Bld_excludedDirectory[5].pathType" Type="Str">relativeToAppDir</Property>
+				<Property Name="Bld_excludedDirectoryCount" Type="Int">6</Property>
 				<Property Name="Bld_localDestDir" Type="Path">../build/source-distribution</Property>
 				<Property Name="Bld_localDestDirType" Type="Str">relativeToCommon</Property>
 				<Property Name="Bld_postActionVIID" Type="Ref">/My Computer/build-tools/Post-Build Action.vi</Property>
@@ -209,7 +207,6 @@
 				<Property Name="Bld_removeVIObj" Type="Int">1</Property>
 				<Property Name="Bld_version.build" Type="Int">2</Property>
 				<Property Name="Bld_version.major" Type="Int">3</Property>
-				<Property Name="DestinationCount" Type="Int">7</Property>
 				<Property Name="Destination[0].destName" Type="Str">Destination Directory</Property>
 				<Property Name="Destination[0].path" Type="Path">../build/source-distribution</Property>
 				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
@@ -229,9 +226,15 @@
 				<Property Name="Destination[6].destName" Type="Str">VIPM</Property>
 				<Property Name="Destination[6].path" Type="Path">../build/source-distribution/VIPM</Property>
 				<Property Name="Destination[6].preserveHierarchy" Type="Bool">true</Property>
-				<Property Name="SourceCount" Type="Int">12</Property>
+				<Property Name="DestinationCount" Type="Int">7</Property>
 				<Property Name="Source[0].itemID" Type="Str">{737CBE8D-B636-4966-8A9B-D0C8DE6E5697}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
+				<Property Name="Source[1].destinationIndex" Type="Int">2</Property>
+				<Property Name="Source[1].itemID" Type="Ref">/My Computer/ase.lvlib</Property>
+				<Property Name="Source[1].Library.allowMissingMembers" Type="Bool">true</Property>
+				<Property Name="Source[1].newName" Type="Str">serenial.io-ase.lvlib</Property>
+				<Property Name="Source[1].sourceInclusion" Type="Str">Include</Property>
+				<Property Name="Source[1].type" Type="Str">Library</Property>
 				<Property Name="Source[10].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[10].itemID" Type="Ref">/My Computer/build-tools/serenial.io-ase.lvproj.xml</Property>
 				<Property Name="Source[10].newName" Type="Str">serenial.io-ase.lvproj</Property>
@@ -239,12 +242,6 @@
 				<Property Name="Source[11].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[11].itemID" Type="Ref">/My Computer/LICENSE</Property>
 				<Property Name="Source[11].sourceInclusion" Type="Str">Include</Property>
-				<Property Name="Source[1].destinationIndex" Type="Int">2</Property>
-				<Property Name="Source[1].itemID" Type="Ref">/My Computer/ase.lvlib</Property>
-				<Property Name="Source[1].Library.allowMissingMembers" Type="Bool">true</Property>
-				<Property Name="Source[1].newName" Type="Str">serenial.io-ase.lvlib</Property>
-				<Property Name="Source[1].sourceInclusion" Type="Str">Include</Property>
-				<Property Name="Source[1].type" Type="Str">Library</Property>
 				<Property Name="Source[2].destinationIndex" Type="Int">3</Property>
 				<Property Name="Source[2].itemID" Type="Ref">/My Computer/ase.console.lvlib/Console Example.vi</Property>
 				<Property Name="Source[2].type" Type="Str">VI</Property>
@@ -287,6 +284,7 @@
 				<Property Name="Source[9].itemID" Type="Ref">/My Computer/VIPM</Property>
 				<Property Name="Source[9].sourceInclusion" Type="Str">Include</Property>
 				<Property Name="Source[9].type" Type="Str">Container</Property>
+				<Property Name="SourceCount" Type="Int">12</Property>
 			</Item>
 			<Item Name="Test-Console-Exe" Type="EXE">
 				<Property Name="App_copyErrors" Type="Bool">true</Property>
@@ -306,20 +304,20 @@
 				<Property Name="Bld_previewCacheID" Type="Str">{91D42B38-5C03-439E-AF5A-D9CD444F370B}</Property>
 				<Property Name="Bld_version.build" Type="Int">1</Property>
 				<Property Name="Bld_version.major" Type="Int">1</Property>
-				<Property Name="DestinationCount" Type="Int">2</Property>
 				<Property Name="Destination[0].destName" Type="Str">ASE-Console.exe</Property>
 				<Property Name="Destination[0].path" Type="Path">../builds/NI_AB_PROJECTNAME/Test-Console-Exe/ASE-Console.exe</Property>
 				<Property Name="Destination[0].preserveHierarchy" Type="Bool">true</Property>
 				<Property Name="Destination[0].type" Type="Str">App</Property>
 				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
 				<Property Name="Destination[1].path" Type="Path">../builds/NI_AB_PROJECTNAME/Test-Console-Exe/data</Property>
-				<Property Name="SourceCount" Type="Int">2</Property>
+				<Property Name="DestinationCount" Type="Int">2</Property>
 				<Property Name="Source[0].itemID" Type="Str">{0764D7BE-EAC5-46C3-AD7C-30C694BFFBAE}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">0</Property>
 				<Property Name="Source[1].itemID" Type="Ref">/My Computer/ase.console.lvlib/Console Example.vi</Property>
 				<Property Name="Source[1].sourceInclusion" Type="Str">TopLevel</Property>
 				<Property Name="Source[1].type" Type="Str">VI</Property>
+				<Property Name="SourceCount" Type="Int">2</Property>
 				<Property Name="TgtF_companyName" Type="Str">University of Manchester</Property>
 				<Property Name="TgtF_fileDescription" Type="Str">Test-Console-Exe</Property>
 				<Property Name="TgtF_internalName" Type="Str">Test-Console-Exe</Property>
