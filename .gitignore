@@ -14,8 +14,4 @@ build*/
 *.lib
 *.pdb
 *.ipk
-LabVIEW/test-binaries
-
-#Custom Build Scripts
-C++/*.bat
-C++/*.sh
+LabVIEW/test-executable
