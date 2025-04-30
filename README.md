@@ -28,41 +28,24 @@ Similar to the `.NET System Exec` from 💖[JKI](https://www.jki.net)💖 - [see
 ![An animation showing a console example VI running commands with the shell on a NI-Linux-RT target](<./docs/img/example-command-line-ni-linux-rt.gif>)
 
 ---
-## Version 2.0.0 Released 🎉
+## Version 3.0.1 Released 🎉
 
 ### Whats New?
-* `Start Call` argument-passing ambiguity/bug removed (matches the internal boost implementation which is more flexible)
-* Binaries for Linux and Windows (32-bit & 64-bit) now included in the Git Repo. Just clone and go!
-* Binary builds require less configurtation as libraries now link dynamically to LabVIEW or the LabVIEW-Runtime
+* Boost (C++ Libraries) boost::process V1 has been deprecated [so this updates to use V2](https://www.boost.org/doc/libs/1_87_0/doc/html/boost_process/v2.html). The ability to use the "cmd" of Start Call.vi has been removed in-line with the boost::process API changes. However, this library now includes a "Lookup Executable Path.vi" which will find the full path of an executable from the system's PATH with just the executable's name to allow for similar behavior if required.
+
+* The On-Exit event now includes any data from the Standard Output and Standard Error pipes that had not yet regex-matched and been generated as Std-Out/Std-Err events.
+
+* Configuration has been simplified to a cluster to avoid custom configuration classes being required.
+
+* The conversion on Windows platforms from UTF-16 can now be specified to be either UTF-8 or the ACP or OEM code page character encoding.
 
 ---
 
 ## Installation on Windows and Linux-x64
-A package based distribution (VIPM etc) for this library is still under-development.
-
-In the mean time, "installation" is best achieved via `git` as follows;
-
-```bash
-git clone https://gitlab.com/serenial/asynchronous-system-exec.git --depth 1
-```
-
-If you already use `git` with your project you might consider the [`git subtree`](https://www.atlassian.com/git/tutorials/git-subtree) command to copy the current release into our project:
-
-```bash
-cd <my-awesome-project-3rd-party-libraries-directory>
-git subtree add --prefix serenial.io-ase https://gitlab.com/serenial/asynchronous-system-exec.git release --squash
-```
-
-Not a fan of `git`?
-[Check the releases of this repository for downloadable library builds](<../../releases>) - Unzip the distribution into your project directory. The library has no dependencies except LabVIEW's built-in libraries.
-
-## Shared Library Resolution on Windows and Linux-x64
-When first opening/mass-compiling this library, LabVIEW will attempt to resolve the new location of shared library file `serenial-io.ase.<bitness>.<extension>`. Resolution should happen automatically but might lead to warnings which can be safely ignored.
-
-![LabVIEW Open Loading Warning](<./docs/img/loading-warning.png>)
+The VIPM Package can be found on [VIPM.io](https://www.vipm.io/package/serenial_lib_asynchronous-system-exec/) or a zipped copy of the VIPM contents can be found in the [releases page of this repository](<../../releases>).
 
 ## Installation on NI-Linux-RT x64
-Once installed on the host machine, copy the `libserenial.io-ase_X.Y.Z_x64.ipk` from the `packages` directory to your Real-Time target.
+Once this library is installed on the host machine, copy `serenial.io-ase_64-3.so` from the `serenial-io.ase/ase/bin` directory (from `vi.lib/Serenial` if installed with VIPM) into the targets `usr\lib\`
 
 See [this guide](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000YMLnCAO&l=en-GB) for methods to transfer the file, alternatively, if the target is setup for `ssh` access and your host machine has the `scp` utility then this can be used as follows to copy the package file to the target's `/tmp` directory.
 
@@ -70,12 +53,8 @@ See [this guide](https://knowledge.ni.com/KnowledgeArticleDetails?id=kA03q000000
 scp <path-to-file-on-host>/libserenial.io-ase_<X.Y.Z>_x64.ipk admin@<NI-RT-SYSTEM-IP>:/tmp
 ```
 
-With the package file transferred to the Real-Time target, install it using `opkg` as the `admin` user 
+Alternatively, you can use a "Source Distribution" Build under a Real Time Target to deploy files across to the RT Target easily.
 
-```sh
-opkg install /tmp/libserenial.io-ase_<X.Y.Z>_x64.ipk
-```
----
 ## Getting Started
 
 Please see the [using the Asynchronous System Exec documentation](./docs/using-the-asynchronous-system-exec.adoc) for getting started using the library.

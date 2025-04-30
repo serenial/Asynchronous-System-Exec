@@ -1,0 +1,10 @@
+== Aggregating Events wihtout using the ID
+:imagesdir: ./img/
+
+An alternative to using the `ID` configuration parameter to distinguish events from multiple parallel-running Exec-calls which are being "aggregated" into a single event handling loop is to use a unique set of event references for each call to `Start-Call.vi`.
+
+The Event Reference can serve as a Key in a LabVIEW Map and, as the Event Reference for any event is provided within each event-structure-case, you are able to lookup the event from the Map and know the source of the event.
+
+Personally, using the ID is probably easier but in situations where generating a meaningful unique ID for each call is tricky, this approach allows you to still know when all events from all Exec-Calls have been received.
+
+image::aggregate-events.png[Demonstrating using unique event references and maps to distinguish the source of events]

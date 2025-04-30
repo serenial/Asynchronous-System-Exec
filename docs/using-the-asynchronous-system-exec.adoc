@@ -5,21 +5,21 @@ Welcome to the docs on how to use the Asynchronous System Exec library. Let's di
 
 == Library Overview
 
-The Asynchronous System Exec API consists of two classes; 
+The Asynchronous System Exec API consists of a single class `serenial.io-ase.lvlib:ase.lvclass`
 
-* `serenial.io-ase.lvlib:ase.lvclass` contains the main component of the library. 
-* `serenial.io-ase.lvlib:configuration.lvclass` provides an interface to configure some of the advanced features of the library whist allowing for future expansion without breaking changes.
+If you installed the library from VIPM then the ASE palette can be found in `Functions` >> `Connectivity` (alongside LabVIEW's `System Exec`). If you haven't installed via VIPM then you can use the class structure to find the API calls.
 
-[#img-library-file-tree]
-.The Library Structure
-image::library-tree.png[An image of the library file tree]
-{empty} +
-
-The API VIs are located in the `API` folder of the `ase` class. Usage information for each VI is available via the context help.
+[cols="1,.>1"]
+|===
+a| .The VIPM-Installed Palette 
+image::mnu.png[An image of the ase palette]
+a| .The `ase` Class
+image::class-tree.png[An image of the ase class tree]
+|===
 
 == Minimal Example
 
-The absolutely most minimal example for the library consists of two VIs - `Start Call.vi` and `Conclude Call.vi`.
+The absolutely most minimal example for the library consists of three VIs - `Lookup Executable Path.vi`, `Start Call.vi` and `Conclude Call.vi`.
 
 These are the most important VIs to lets start here!
 
@@ -35,12 +35,11 @@ image::minimal-example.png[A minimal example of the API usage]
 .Please note the following;
 *  Not all executables will self-terminate! You might have to either send the termination signal using `Send Terminate.vi` or indicate via some other method, perhaps writing to or closing the Standard Input, that you want the executable to finish and exit.
 * The `ASE Handle` inputs and outputs for library calls is _by-reference_ i.e. you perform operations on the instance pointed to by the handle. This means that the `ASE Handle` wire can be branched without creating copies of the instance.
-* If the executable we need to call is not in the system's PATH environmental-variable, the absolute path to it can also be used. Simply wire a LabVIEW `Path` type into the executable name terminal. This will change to use the _exe-args_ polymorphic instance. In this case the arguments are supplied via a string array to avoid ambiguity when passing the executable path.
 * If no Event References are passed to `Start Call.vi` then any data on the Standard Output or Standard Error is safely and silently discarded.
 
 _and finally_
 
-WARNING: You must ensure that `Conclude Call.vi` is used when you have finished with the Asynchronous System Exec instance to ensure all internal resources are de-allocated.
+WARNING: You must ensure that `Conclude Call.vi` is used when you have finished with the Asynchronous System Exec instance to guarantee all internal resources are de-allocated.
 
 == The Flexibility of Asynchronicity
 You might be thinking - _Huh, you said the library was asynchronous but we still have to wait at `Conclude Call.vi`?_ - Well, yes! That is true so lets see what else we can do.
@@ -75,27 +74,30 @@ NOTE: Ensure that you have already performed the "event registration" step befor
 
 The VIs `Create Event References.vi` and `Destroy Event References.vi` are provided for convenience and it is safe _memory-wise_ if only some of the registered events have an _Event Case_ associated with them so long as the Event Structure is repeatedly executing in a loop or similar structure. These "unhandled" events will be silently discarded by LabVIEW when the Event Structure runs.
 
-== Using the Advanced Configuration
-The `configuration.lvclass` provided with the library allows for the advanced configuration features to be utilized.
+== Configuration
+The existing documentation has sofar described the behaviour with the default configuration options.
 
-One, many or all of the features can be implemented at once depending on what `configuration.lvclass` methods are overridden.
-
-_Currently these features are;_
+.The Configuration Type-Def Cluster
+image::configuration.png[The Configuration Cluster used with `Start Call.vi`]
+{empty} +
 
 *Specification of an Event Identifier String*
 
 This identifier string is provided with each event allowing for the originator of an event to be easily identified when multiple Asynchronous System Exec events share the same Event References and Event Case Structure.
 
-To implement this feature, create a child class of `serenial.io-ase.lvlib:configuration.lvclass` which overrides `Event Identifier.vi`. An example of this is shown in the code below:
+Specifying a unique value for each call of `Start Call.vi` provides an identifier to distinguish the source of events.
+
+If you would like to see an alternative method to achieve something similar without using the ID string - xref:document-aggregating-events.adoc[take a look at this note]
 
 [#img-example-with-id]
-.Using a Custom `configuration.lvclass` child to override the Event Identifier String for Event Aggregation
-image::example-with-id.png[An example of using a child class of configuration.lvclass to override the event identification]
+.Using the ID-Configuration Parameter as an Event Identifier String for Event Aggregation
+image::example-with-id.png[An example of using a different Unique ID value for each call of `Start Call.vi`]
 {empty} +
 
 *Custom Event Stream Split Character-Match Regular Expression*
 
-By default, the Standard Output and Standard Error streams are split on a `newline` character (`\n`) but this behavior can be changed to any valid https://www.boost.org/doc/libs/1_77_0/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html[`PERL` regular expression]. For example, the expression `[0-9]` would split the stream on any numeric character.
+By default, the Standard Output and Standard Error streams are split on a `newline` character (`\n`) but this behavior can be changed to any valid https://www.boost.org/doc/libs/1_87_0/libs/regex/doc/html/boost_regex/syntax/perl_syntax.html[`PERL` regular expression]. For example, the expression `[0-9]` would split the stream on any numeric character.
 
-Create a child class of `serenial.io-ase.lvlib:configuration.lvclass` which overrides `Stream Split Character Match RegExp Std Out.vi` and/or `Stream Split Character Match RegExp Std Error.vi` to use this feature.
+*Custom Windows Encoding Options*
 
+LabVIEW on Windows doesn't have unicode enabled or well supported so the option is provided to convert unicode characters to characters that are supported according to the Window's code page using https://learn.microsoft.com/en-us/windows/win32/api/stringapiset/nf-stringapiset-widechartomultibyte[the Window's API's `WideCharToMultibyte` call internally]. This setting is ignored on Linux and the UTF-8 encoded data is always passed out to the LabVIEW code.

@@ -262,8 +262,9 @@
 				<Property Name="Bld_preActionVIID" Type="Ref">/My Computer/build-tools/Pre-Build Action.vi</Property>
 				<Property Name="Bld_previewCacheID" Type="Str">{6F2A14B2-28DC-4CA9-97F9-F509CD76A556}</Property>
 				<Property Name="Bld_removeVIObj" Type="Int">1</Property>
-				<Property Name="Bld_version.build" Type="Int">2</Property>
+				<Property Name="Bld_version.build" Type="Int">3</Property>
 				<Property Name="Bld_version.major" Type="Int">3</Property>
+				<Property Name="Bld_version.patch" Type="Int">1</Property>
 				<Property Name="Destination[0].destName" Type="Str">Destination Directory</Property>
 				<Property Name="Destination[0].path" Type="Path">../build/source-distribution</Property>
 				<Property Name="Destination[1].destName" Type="Str">Support Directory</Property>
@@ -284,7 +285,7 @@
 				<Property Name="Destination[6].path" Type="Path">../build/source-distribution/VIPM</Property>
 				<Property Name="Destination[6].preserveHierarchy" Type="Bool">true</Property>
 				<Property Name="DestinationCount" Type="Int">7</Property>
-				<Property Name="Source[0].itemID" Type="Str">{6D1CD6A4-D20A-49A1-B8E0-C9D43A50F863}</Property>
+				<Property Name="Source[0].itemID" Type="Str">{BDE69A1B-14CA-4FF5-8DB9-AF65F1DF5F70}</Property>
 				<Property Name="Source[0].type" Type="Str">Container</Property>
 				<Property Name="Source[1].destinationIndex" Type="Int">2</Property>
 				<Property Name="Source[1].itemID" Type="Ref">/My Computer/ase.lvlib</Property>
